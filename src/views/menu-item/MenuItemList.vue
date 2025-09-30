@@ -2,7 +2,7 @@
   <div class="container px-3">
     <div v-if="loading" class="d-flex justify-content-center align-items-center vh-100">
       <div class="spinner-grow text-success" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">در حال بارگیری...</span>
       </div>
     </div>
 
@@ -12,15 +12,15 @@
           class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center p-3"
         >
           <div>
-            <h2 class="h5 text-success">Menu Items</h2>
-            <p class="mb-0 text-muted small">Manage your Office</p>
+            <h2 class="h5 text-primary">منوی آیتم ها</h2>
+            <p class="mb-0 text-muted small">مدیریت سایت</p>
           </div>
           <button
-            class="btn btn-success btn-sm gap-2 rounded-1 px-4 py-2"
+            class="btn btn-primary btn-sm gap-2 rounded-1 px-4 py-2"
             @click="router.push({ name: APP_ROUTE_NAMES.CREATE_MENU_ITEM })"
           >
             <i class="bi bi-plus-square"></i> &nbsp;
-            <span>Add Item</span>
+            <span>افزودن</span>
           </button>
         </div>
         <div class="card-body p-3">
@@ -28,21 +28,21 @@
             <table class="table table-hover align-middle mb-0">
               <thead>
                 <tr>
-                  <th class="ps-3 small text-muted">Item</th>
-                  <th class="small text-muted">Category</th>
-                  <th class="small text-muted">Price</th>
-                  <th class="small text-muted">Tag</th>
-                  <th class="pe-3 text-end small text-muted">Actions</th>
+                  <th class="pe-3 small text-muted">آیتم</th>
+                  <th class="small text-muted">دسته بندی</th>
+                  <th class="small text-muted">قیمت</th>
+                  <th class="small text-muted">تگ یا هشتگ</th>
+                  <th class="ps-3 text-start small text-muted">عملکرد</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="menuItem in menuItems" :key="menuItem.id">
-                  <td class="ps-3">
+                  <td class="pe-3">
                     <div class="d-flex align-items-center">
                       <img
                         :src="CONFIG_IMAGE_URL + menuItem.image"
                         alt="Item"
-                        class="rounded object-fit-cover me-2"
+                        class="rounded object-fit-cover ms-2"
                         style="width: 50px; height: 50px"
                       />
                       <div>
@@ -51,7 +51,7 @@
                     </div>
                   </td>
                   <td>
-                    <span class="badge bg-success bg-opacity-10 text-success small">
+                    <span class="badge bg-primary bg-opacity-10 text-primary small">
                       {{ menuItem.category }}
                     </span>
                   </td>
@@ -61,9 +61,9 @@
                       {{ menuItem.specialTag }}
                     </span>
                   </td>
-                  <td class="pe-3 text-end">
+                  <td class="ps-3 text-end">
                     <div class="d-flex gap-2 justify-content-end">
-                      <button class="btn btn-sm btn-outline-success">
+                      <button class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-pencil-square"></i>
                       </button>
                       <button class="btn btn-sm btn-outline-danger">
@@ -105,3 +105,10 @@ const fetchMenuItems = async () => {
 
 onMounted(fetchMenuItems)
 </script>
+
+<style scoped>
+* {
+  direction: rtl;
+  font-family: Yekan;
+}
+</style>

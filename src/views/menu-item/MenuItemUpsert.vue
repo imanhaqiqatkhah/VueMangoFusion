@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center">
+  <div class="d-flex justify-content-center align-items-center" v-if="loading">
     <div class="spinner-grow text-primary" style="width: 2.5rem; height: 2.5rem" role="status">
       <span class="visually-hidden">در حال بارگیری...</span>
     </div>
   </div>
-  <div class="container">
+  <div class="container" v-else>
     <div class="mx-auto">
       <div class="mb-4 border-bottom d-flex justify-content-between align-items-center py-3">
         <h3 class="fw-semibold text-primary">افزودن منو</h3>
@@ -84,6 +84,25 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { reactive, ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+import { CONFIG_IMAGE_URL } from '@/constants/config'
+const loading = ref(false)
+
+const menuItemObj = reactive({
+  name: '',
+  description: '',
+  specialTag: '',
+  price: 0,
+  image: '',
+})
+
+const router = new useRouter()
+const route = useRoute()
+</script>
 
 <style scoped>
 * {

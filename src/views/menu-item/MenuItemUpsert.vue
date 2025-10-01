@@ -126,7 +126,7 @@ import menuItemService from '@/services/menuItemService'
 import { useSwal } from '@/composables/swal'
 const { showConfirm, showError, showSuccess } = useSwal()
 const router = new useRouter()
-const route = useRoute()
+const route = new useRoute()
 const loading = ref(false)
 const isProcessing = ref(false)
 const errorList = reactive([])

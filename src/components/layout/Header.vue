@@ -69,7 +69,7 @@
             </ul>
           </li>
         </ul>
-        <ul class="navbar-nav me-auto align-items-center small">
+        <ul class="navbar-nav me-auto small">
           <li class="nav-item">
             <router-link
               class="nav-link text-light position-relative"

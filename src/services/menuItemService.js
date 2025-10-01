@@ -57,4 +57,18 @@ export default {
       throw error
     }
   },
+  async deleteMenuItem(id) {
+    try {
+      const response = await api.delete(`/menuItem?id=${id}`)
+
+      if (response.data.inSuccess) {
+        return response.data.result
+      } else {
+        throw new Error('Failed to delete menu items')
+      }
+    } catch (error) {
+      console.log('Error deleting menu items:', error)
+      throw error
+    }
+  },
 }

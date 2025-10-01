@@ -63,7 +63,15 @@
                   </td>
                   <td class="ps-3 text-end">
                     <div class="d-flex gap-2 justify-content-end">
-                      <button class="btn btn-sm btn-outline-primary">
+                      <button
+                        class="btn btn-sm btn-outline-primary"
+                        @click="
+                          router.push({
+                            name: APP_ROUTE_NAMES.EDIT_MENU_ITEM,
+                            params: { id: menuItem.id },
+                          })
+                        "
+                      >
                         <i class="bi bi-pencil-square"></i>
                       </button>
                       <button class="btn btn-sm btn-outline-danger">

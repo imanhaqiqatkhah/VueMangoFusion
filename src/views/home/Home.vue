@@ -60,7 +60,7 @@
       </div>
       <div>
         <div class="row">
-          نمایش محصولات
+          <MenuItemCard class="list-item col-12 col-md-6 col-lg-4 pb-4" />
 
           <div class="text-center py-5 display-4 mx-auto text-body-secondary mb-3 d-block">
             <i class="bi bi-emoji-frown"></i>
@@ -72,6 +72,10 @@
     <!-- Menu Detail Modal -->
   </div>
 </template>
+
+<script setup>
+import MenuItemCard from '@/components/card/MenuItemCard.vue'
+</script>
 
 <style scoped>
 * {

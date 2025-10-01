@@ -13,8 +13,9 @@
             type="submit"
             form="menuForm"
             class="btn btn-primary btn-sm gap-2 rounded-1 px-4 py-2"
+            :disabled="isProcessing"
           >
-            <span class="spinner-border spinner-border-sm ms-2"></span>
+            <span v-if="isProcessing" class="spinner-border spinner-border-sm ms-2"></span>
             {{ menuItemIdForUpdate ? 'آپدیت' : 'افزودن' }} آیتم
           </button>
           <button
@@ -122,6 +123,8 @@ import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { CONFIG_IMAGE_URL } from '@/constants/config'
 import { CATEGORIES } from '@/constants/constants'
 import menuItemService from '@/services/menuItemService'
+import { useSwal } from '@/composables/swal'
+const { showConfirm, showError, showSuccess } = useSwal()
 const router = new useRouter()
 const route = useRoute()
 const loading = ref(false)
@@ -199,10 +202,12 @@ const onFormSubmit = async (event) => {
       menuItemService
         .createMenuItem(formData)
         .then(() => {
-          alert('منو ایجاد شد')
+          showSuccess('منو ایجاد شد')
+          router.push({ name: APP_ROUTE_NAMES.MENU_ITEM_LIST })
         })
         .catch((err) => {
           isProcessing.value = false
+          showError('خطا در ایجاد منو')
           console.log('Create Failed', err)
         })
     } else {
@@ -210,10 +215,12 @@ const onFormSubmit = async (event) => {
       menuItemService
         .updateMenuItem(menuItemIdForUpdate, formData)
         .then(() => {
-          alert('منو آپدیت شد')
+          showSuccess('منو آپدیت شد')
+          router.push({ name: APP_ROUTE_NAMES.MENU_ITEM_LIST })
         })
         .catch((err) => {
           isProcessing.value = false
+          showError('خطا در آپدیت منو')
           console.log('Update Failed', err)
         })
     }

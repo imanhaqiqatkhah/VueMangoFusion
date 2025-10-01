@@ -4,7 +4,7 @@
       <div class="position-relative">
         <img
           src="https://placehold.co/300x200"
-          class="card-img-top rounded-top-4 w-100 object-fir-cover"
+          class="card-img-top rounded-top-4 w-100 object-fit-cover"
           style="height: 200px"
         />
         <!-- View Details Button -->

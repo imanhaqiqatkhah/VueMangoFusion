@@ -28,8 +28,17 @@
         <!-- Categories -->
         <div class="col-lg-auto">
           <div class="d-flex flex-wrap gap-2">
-            <button class="btn rounded px-4 py-2 fe-7 position-relative overflow-hidden">
-              <span class="position-relative z-1"> دسته بندی </span>
+            <button
+              :class="{
+                'btn-primary shadow-sm': category === selectedCategory,
+                'btn-outline-primary': category !== selectedCategory,
+              }"
+              class="btn rounded px-4 py-2 fe-7 position-relative overflow-hidden"
+              @click="updateSelectedCategory(category)"
+              v-for="(category, index) in categoryList"
+              :key="index"
+            >
+              <span class="position-relative z-1">{{ category }}</span>
             </button>
           </div>
         </div>
@@ -53,15 +62,15 @@
         </div>
       </div>
       <!-- Content Section -->
-      <div class="text-center py-5">
+      <div class="text-center py-5" v-if="loading">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">در حال بارگیری...</span>
         </div>
       </div>
-      <div>
-        <div class="row" v-if="menuItems.length && menuItems.length > 0">
+      <div v-else>
+        <div class="row" v-if="filteredItems.length && filteredItems.length > 0">
           <MenuItemCard
-            v-for="(item, index) in menuItems"
+            v-for="(item, index) in filteredItems"
             :key="item.id"
             class="list-item col-12 col-md-6 col-lg-4 pb-4"
             :menuItem="item"
@@ -81,15 +90,34 @@
 <script setup>
 import MenuItemCard from '@/components/card/MenuItemCard.vue'
 import menuItemService from '@/services/menuItemService'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { CONFIG_IMAGE_URL } from '@/constants/config'
 import { useSwal } from '@/composables/swal'
 import { useRouter } from 'vue-router'
+import { CATEGORIES } from '@/constants/constants'
 const { showConfirm, showError, showSuccess } = useSwal()
-const menuItems = reactive([])
+let menuItems = reactive([])
 const loading = ref(false)
+const selectedCategory = ref('همه')
 const router = useRouter()
+const categoryList = ref(['همه', ...CATEGORIES])
+
+function updateSelectedCategory(category) {
+  selectedCategory.value = category
+}
+
+const filteredItems = computed(() => {
+  let tempArray =
+    selectedCategory.value == 'همه'
+      ? [...menuItems]
+      : menuItems.filter(
+          (item) => item.category.toUpperCase() === selectedCategory.value.toUpperCase()
+        )
+
+  return tempArray
+})
+
 const fetchMenuItems = async () => {
   menuItems.length = 0
   loading.value = true

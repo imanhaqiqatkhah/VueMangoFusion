@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 
 export const useCartStore = defineStore('cartStore', () => {
   const cartItems = reactive([])
@@ -12,7 +12,7 @@ export const useCartStore = defineStore('cartStore', () => {
   })
 
   function addToCart(menuItem, quantity = 1) {
-    const existingItem = cartItem.find((item) => item.id === menuItem.id)
+    const existingItem = cartItems.find((item) => item.id === menuItem.id)
     if (existingItem) {
       existingItem.quantity += quantity
     } else {

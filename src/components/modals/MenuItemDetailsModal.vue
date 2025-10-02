@@ -32,15 +32,15 @@
             <div class="col-12 col-md-6">
               <div class="position-relative">
                 <img
-                  src=""
+                  :src="CONFIG_IMAGE_URL + menuItem.image"
                   class="rounded-4 w-100 object-fit-cover"
                   style="max-height: 300px; min-height: 200px"
                 />
                 <div class="position-absolute top-0 start-0 m-2 m-sm-3">
                   <span
                     class="badge bg-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 d-flex align-items-center gap-1 fe-6 fe-sm-5"
-                    >$$$</span
-                  >
+                    >{{ menuItem.price.toFixed(3) }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -50,7 +50,7 @@
                 <!-- Name -->
                 <div>
                   <div class="text-secondary small mb-1"><i class="bi bi-card-text"></i>نام</div>
-                  <h4 class="fw-bold mb-0 fe-5 fe-sm-4">نام</h4>
+                  <h4 class="fw-bold mb-0 fe-5 fe-sm-4">{{ menuItem.name }}</h4>
                 </div>
                 <!-- Category -->
                 <div>
@@ -58,18 +58,18 @@
                   <div
                     class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
                   >
-                    دسته بندی
+                    {{ menuItem.category }}
                   </div>
                 </div>
                 <!-- Special Tag -->
-                <div>
+                <div v-if="menuItem.specialTag">
                   <div class="text-secondary small mb-1">
                     <i class="bi bi-star">تگ یا هشتگ اجتماعی</i>
                   </div>
                   <div
                     class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
                   >
-                    تگ یا هشتگ
+                    {{ menuItem.specialTag }}
                   </div>
                 </div>
                 <!-- Description -->
@@ -77,7 +77,7 @@
                   <div class="text-secondary small mb-1">
                     <i class="bi bi-card-text"></i>توضیحات
                   </div>
-                  <p class="mb-0">توضیحات</p>
+                  <p class="mb-0">{{ menuItem.description }}</p>
                 </div>
               </div>
             </div>
@@ -99,6 +99,8 @@
 </template>
 
 <script setup>
+import { CONFIG_IMAGE_URL } from '@/constants/config'
+
 const props = defineProps({
   show: Boolean,
   menuItem: Object,
@@ -124,7 +126,7 @@ const handleClose = () => {
 @media (min-width: 577px) {
   .modal-size {
     width: 60%;
-    height: 75%;
+    height: 65%;
   }
 }
 </style>

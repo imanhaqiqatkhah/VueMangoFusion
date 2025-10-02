@@ -52,9 +52,9 @@
               <i class="bi bi-sort-down"></i><span class="fe-7">نوع ترتیب بندی</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-start shadow-sm rounded-3">
-              <li>
+              <li v-for="(sort, index) in SORT_OPTIONS" :key="index">
                 <button class="dropdown-item py-2 px-3 d-flex align-items-center gap-2">
-                  <span class="fe-7 px-3 mx-1">ترتیب</span>
+                  <span class="fe-7 px-1 mx-1">{{ sort }}</span>
                 </button>
               </li>
             </ul>
@@ -95,11 +95,19 @@ import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { CONFIG_IMAGE_URL } from '@/constants/config'
 import { useSwal } from '@/composables/swal'
 import { useRouter } from 'vue-router'
-import { CATEGORIES } from '@/constants/constants'
+import {
+  CATEGORIES,
+  SORT_NAME_A_Z,
+  SORT_NAME_Z_A,
+  SORT_PRICE_LOW_HIGH,
+  SORT_PRICE_HIGH_LOW,
+  SORT_OPTIONS,
+} from '@/constants/constants'
 const { showConfirm, showError, showSuccess } = useSwal()
 let menuItems = reactive([])
 const loading = ref(false)
 const selectedCategory = ref('همه')
+const selectedSortOption = ref(SORT_OPTIONS[0])
 const router = useRouter()
 const categoryList = ref(['همه', ...CATEGORIES])
 

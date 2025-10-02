@@ -15,7 +15,12 @@
                 <button class="btn btn-primary px-4 d-flex align-items-center border-0">
                   <i class="bi bi-search"></i><span class="me-2 d-none d-sm-inline">جستجو</span>
                 </button>
-                <input type="text" class="form-control border-0 py-3 px-4" placeholder="جستجو کن" />
+                <input
+                  v-model="searchValue"
+                  type="text"
+                  class="form-control border-0 py-3 px-4"
+                  placeholder="جستجو کن"
+                />
               </div>
             </div>
           </div>
@@ -111,6 +116,7 @@ let menuItems = reactive([])
 const loading = ref(false)
 const selectedCategory = ref('همه')
 const selectedSortOption = ref(SORT_OPTIONS[0])
+const searchValue = ref('')
 const router = useRouter()
 const categoryList = ref(['همه', ...CATEGORIES])
 
@@ -127,6 +133,12 @@ const filteredItems = computed(() => {
       : menuItems.filter(
           (item) => item.category.toUpperCase() === selectedCategory.value.toUpperCase()
         )
+
+  if (searchValue.value) {
+    tempArray = tempArray.filter((item) =>
+      item.name.toUpperCase().includes(searchValue.value.toUpperCase())
+    )
+  }
 
   if (selectedSortOption.value == SORT_NAME_A_Z) {
     tempArray.sort((a, b) => a.name.localeCompare(b.name))

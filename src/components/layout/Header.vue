@@ -78,7 +78,7 @@
               ><i class="bi bi-cart3"></i>
               <span
                 class="position-absolute start-100 translate-middle badge rounded-pill bg-danger"
-                >0</span
+                >{{ cartStore.cartCount }}</span
               >
             </router-link>
           </li>
@@ -142,7 +142,8 @@
 <script setup>
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useThemeStore } from '@/stores/storeTheme'
-
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore()
 const themeStore = useThemeStore()
 </script>
 

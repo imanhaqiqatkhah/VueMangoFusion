@@ -49,11 +49,14 @@
               type="button"
               data-bs-toggle="dropdown"
             >
-              <i class="bi bi-sort-down"></i><span class="fe-7">نوع ترتیب بندی</span>
+              <i class="bi bi-sort-down"></i><span class="fe-7">{{ selectedSortOption }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-start shadow-sm rounded-3">
               <li v-for="(sort, index) in SORT_OPTIONS" :key="index">
-                <button class="dropdown-item py-2 px-3 d-flex align-items-center gap-2">
+                <button
+                  class="dropdown-item py-2 px-3 d-flex align-items-center gap-2"
+                  @click="updateSelectedSortOption(sort)"
+                >
                   <span class="fe-7 px-1 mx-1">{{ sort }}</span>
                 </button>
               </li>
@@ -114,7 +117,9 @@ const categoryList = ref(['همه', ...CATEGORIES])
 function updateSelectedCategory(category) {
   selectedCategory.value = category
 }
-
+function updateSelectedSortOption(sort) {
+  selectedSortOption.value = sort
+}
 const filteredItems = computed(() => {
   let tempArray =
     selectedCategory.value == 'همه'
@@ -123,6 +128,18 @@ const filteredItems = computed(() => {
           (item) => item.category.toUpperCase() === selectedCategory.value.toUpperCase()
         )
 
+  if (selectedSortOption.value == SORT_NAME_A_Z) {
+    tempArray.sort((a, b) => a.name.localeCompare(b.name))
+  }
+  if (selectedSortOption.value == SORT_NAME_Z_A) {
+    tempArray.sort((a, b) => b.name.localeCompare(a.name))
+  }
+  if (selectedSortOption.value == SORT_PRICE_LOW_HIGH) {
+    tempArray.sort((a, b) => a.price - b.price)
+  }
+  if (selectedSortOption.value == SORT_PRICE_HIGH_LOW) {
+    tempArray.sort((a, b) => b.price - a.price)
+  }
   return tempArray
 })
 

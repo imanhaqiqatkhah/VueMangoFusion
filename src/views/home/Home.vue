@@ -76,8 +76,9 @@
         </div>
       </div>
       <div v-else>
-        <div class="row" v-if="filteredItems.length && filteredItems.length > 0">
+        <div class="row">
           <MenuItemCard
+            v-if="filteredItems.length && filteredItems.length > 0"
             v-for="(item, index) in filteredItems"
             :key="item.id"
             class="list-item col-12 col-md-6 col-lg-4 pb-4"
@@ -92,10 +93,12 @@
       </div>
     </div>
     <!-- Menu Detail Modal -->
+    <MenuItemDetailsModal />
   </div>
 </template>
 
 <script setup>
+import MenuItemDetailsModal from '@/components/modals/MenuItemDetailsModal.vue'
 import MenuItemCard from '@/components/card/MenuItemCard.vue'
 import menuItemService from '@/services/menuItemService'
 import { ref, onMounted, reactive, computed } from 'vue'
@@ -112,13 +115,13 @@ import {
   SORT_OPTIONS,
 } from '@/constants/constants'
 const { showConfirm, showError, showSuccess } = useSwal()
-let menuItems = reactive([])
+const menuItems = reactive([])
 const loading = ref(false)
 const selectedCategory = ref('همه')
 const selectedSortOption = ref(SORT_OPTIONS[0])
 const searchValue = ref('')
 const router = useRouter()
-const categoryList = ref(['همه', ...CATEGORIES])
+const categoryList = reactive(['همه', ...CATEGORIES])
 
 function updateSelectedCategory(category) {
   selectedCategory.value = category

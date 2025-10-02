@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="show"
     class="position-fixed top-0 end-0 w-100 h-100 d-flex justify-content-center align-items-center bg-black bg-opacity-50"
     style="z-index: 1050"
   >
@@ -21,6 +22,7 @@
             type="button"
             class="position-absolute start-0 ms-4 btn-close"
             aria-label="Close menu details"
+            @click="handleClose"
           ></button>
         </div>
         <!-- Body - Scrollable Content -->
@@ -83,7 +85,11 @@
         </div>
         <!-- Footer -->
         <div class="modal-footer border-0 px-3 px-sm-4 pb-3 pb-sm-4 sticky-bottom bg-body">
-          <button type="button" class="btn btn-outline-secondary rounded-pill px-3 px-sm-4 w-100">
+          <button
+            type="button"
+            @click="handleClose"
+            class="btn btn-outline-secondary rounded-pill px-3 px-sm-4 w-100"
+          >
             بستن
           </button>
         </div>
@@ -91,6 +97,19 @@
     </div>
   </div>
 </template>
+
+<script setup>
+const props = defineProps({
+  show: Boolean,
+  menuItem: Object,
+})
+
+const emit = defineEmits(['close'])
+
+const handleClose = () => {
+  emit('close')
+}
+</script>
 
 <style scoped>
 * {

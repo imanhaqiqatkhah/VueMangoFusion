@@ -6,3 +6,5 @@ export const SORT_NAME_A_Z = 'حروف الفبا از پایین به بالا'
 export const SORT_NAME_Z_A = 'حروف الفبا از بالا به پایین'
 
 export const SORT_OPTIONS = [SORT_NAME_A_Z, SORT_NAME_Z_A, SORT_PRICE_LOW_HIGH, SORT_PRICE_HIGH_LOW]
+
+export const ROLES = ['کاربر', 'ادمین']

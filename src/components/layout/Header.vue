@@ -82,7 +82,7 @@
               >
             </router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link text-light"
               aria-current="page"
@@ -90,7 +90,7 @@
               >ورود
             </router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link text-light"
               aria-current="page"
@@ -98,8 +98,14 @@
               >ثبت نام
             </router-link>
           </li>
-          <li class="nav-item">
-            <button class="nav-link text-light px-2" aria-current="page">خروج</button>
+          <li class="nav-item" v-if="authStore.isAuthenticated">
+            <button
+              class="nav-link text-light px-2"
+              aria-current="page"
+              @click="authStore.signOut()"
+            >
+              خروج
+            </button>
           </li>
 
           <li class="nav-item dropdown">
@@ -143,7 +149,9 @@
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useThemeStore } from '@/stores/storeTheme'
 import { useCartStore } from '@/stores/cartStore'
+import { useAuthStore } from '@/stores/authStore'
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 const themeStore = useThemeStore()
 </script>
 

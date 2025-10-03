@@ -59,7 +59,7 @@ const formObj = reactive({
   name: '',
   email: '',
   password: '',
-  role: 'کاربر',
+  role: 'Customer',
 })
 
 const isLoading = ref(false)

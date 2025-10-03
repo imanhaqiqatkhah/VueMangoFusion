@@ -3,15 +3,17 @@
     <div class="row">
       <div class="col-12">
         <h2 class="mb-4 text-primary">سبد شما</h2>
-        <div class="text-center py-4">
+        <div class="text-center py-4" v-if="cartStore.cartCount == 0">
           <div class="mb-4">
             <i class="bi bi-cart" style="font-size: 2rem"></i>
           </div>
           <h3 class="h5 mb-3">سبد شما خالی است</h3>
           <p class="h5 mb-3">انگار سبد شما خالی است، برای خرید زودتر اقدام کن</p>
-          <button class="btn btn-primary"><i class="bi bi-arrow-right-square"></i></button>
+          <button class="btn btn-primary" @click="continueShopping">
+            <i class="bi bi-arrow-right-square ms-1"></i>ادامه به خرید کردن
+          </button>
         </div>
-        <div>
+        <div v-else>
           <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-0">
               <div class="table-responsive">
@@ -24,32 +26,44 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr v-for="item in cartStore.cartItems" :key="item.id">
                       <td class="pe-4">
                         <div class="d-flex align-items-center gap-3">
                           <img
-                            src="https://placehold.co/50x50"
+                            :src="CONFIG_IMAGE_URL + item.image"
                             class="img-fluid rounded d-none d-md-block"
                             style="width: 50px; height: 50px; object-fit: cover"
                           />
-                          <span class="fw-medium">نام</span>
+                          <span class="fw-medium">{{ item.name }}</span>
                         </div>
                       </td>
-                      <td class="text-center align-middle">$$$</td>
+                      <td class="text-center align-middle">{{ item.price.toFixed(3) }}</td>
                       <td class="align-middle">
                         <div class="input-group input-group-sm justify-content-center" style="">
-                          <button class="btn btn-outline-secondary" type="button">
+                          <button
+                            @click="increaseQuantity(item.id)"
+                            class="btn btn-outline-secondary"
+                            type="button"
+                          >
                             <i class="bi bi-plus"></i>
                           </button>
                           <input
                             type="text"
                             class="form-control text-center px-2"
                             readonly
+                            v-model="item.quantity"
                             style="max-width: 50px"
                           />
-                          <button class="btn btn-outline-secondary" type="button">
+                          <button
+                            @click="decreaseQuantity(item.id)"
+                            class="btn btn-outline-secondary"
+                            type="button"
+                          >
                             <i class="bi bi-dash"></i></button
-                          ><button class="btn btn-sm btn-outline-danger mx-md-4 mx-1">
+                          ><button
+                            @click="removeItem(item.id)"
+                            class="btn btn-sm btn-outline-danger mx-md-4 mx-1"
+                          >
                             <i class="bi bi-trash"></i>
                           </button>
                         </div>
@@ -63,10 +77,10 @@
           <div class="row g-4">
             <div class="col-md-6">
               <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary" @click="continueShopping">
                   <i class="bi bi-arrow-right-square mx-1"></i><span class="">ادامه خرید</span>
                 </button>
-                <button class="btn btn-outline-danger">
+                <button class="btn btn-outline-danger" @click="cartStore.clearCart()">
                   <i class="bi bi-trash mx-1"></i><span class="">حذف سبد</span>
                 </button>
               </div>
@@ -76,13 +90,13 @@
                 <div class="card-body">
                   <h4 class="card-title h6 mb-3">سفارش الان</h4>
                   <div class="d-flex justify-content-between mb-2">
-                    <span class="text-body-secondary"> آیتم ها (0)</span>
-                    <span>$$$</span>
+                    <span class="text-body-secondary"> آیتم ها</span>
+                    <span>{{ cartStore.cartCount }}</span>
                   </div>
                   <hr />
                   <div class="d-flex justify-content-between mb-3">
                     <span class="fw-bold">قیمت کلی</span>
-                    <span class="fw-bold test-primary">$$$</span>
+                    <span class="fw-bold test-primary">{{ cartStore.cartTotal.toFixed(3) }}</span>
                   </div>
                   <button class="btn btn-primary w-100" @click="checkout">
                     <i class="bi bi-cash-stack"></i>اقدام برای پرداخت
@@ -97,9 +111,38 @@
         </div>
       </div>
     </div>
+    <place-order-modal />
   </div>
 </template>
+<script setup>
+import PlaceOrderModal from '@/components/modals/PlaceOrderModal.vue'
+import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+import { CONFIG_IMAGE_URL } from '@/constants/config'
+import { computed, createApp, ref } from 'vue'
+import { useCartStore } from '@/stores/cartStore'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const cartStore = useCartStore()
 
+const removeItem = (itemId) => {
+  cartStore.removeFromCart(itemId)
+}
+
+const continueShopping = () => {
+  router.push({ name: APP_ROUTE_NAMES.HOME })
+}
+
+const increaseQuantity = (itemId) => {
+  const item = cartStore.cartItems.find((item) => item.id == itemId)
+  cartStore.updateQuantity(itemId, item.quantity + 1)
+}
+
+const decreaseQuantity = (itemId) => {
+  const item = cartStore.cartItems.find((item) => item.id == itemId)
+
+  cartStore.updateQuantity(itemId, item.quantity - 1)
+}
+</script>
 <style scoped>
 * {
   font-family: Yekan;

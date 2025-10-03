@@ -6,7 +6,7 @@
           <div class="row justify-content-center text-center">
             <div class="col-lg-8 col-xl-7">
               <h1 class="display-4 fw-bold text-white mb-4">
-                با پشتیبانی تمام<br /><span class="text-primary-emphasis">با ما همراه باشید</span>
+                سرزمین ابری<br /><span class="text-primary-emphasis">همیشه با شما</span>
               </h1>
               <div
                 class="input-group mx-auto shadow-lg rounded-pill overflow-hidden"

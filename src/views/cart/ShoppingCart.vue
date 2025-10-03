@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <place-order-modal />
+    <place-order-modal :is-open="showOrderModal" @close="showOrderModal = false" />
   </div>
 </template>
 <script setup>
@@ -121,11 +121,21 @@ import { CONFIG_IMAGE_URL } from '@/constants/config'
 import { computed, createApp, ref } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useRouter } from 'vue-router'
+import { useSwal } from '@/composables/swal'
+const { showError } = useSwal()
 const router = useRouter()
 const cartStore = useCartStore()
-
+const showOrderModal = ref(false)
 const removeItem = (itemId) => {
   cartStore.removeFromCart(itemId)
+}
+
+const checkout = () => {
+  if (cartStore.cartCount.value === 0) {
+    showError('سبد خرید خالی است')
+    return
+  }
+  showOrderModal.value = true
 }
 
 const continueShopping = () => {

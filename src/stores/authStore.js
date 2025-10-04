@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('authStore', () => {
   })
 
   function decodeToken(token) {
-    const payload = JSON.parse(atob(token.split('.')[1]))
+    const payload = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))))
     return {
       email: payload.email,
       role: payload.role,

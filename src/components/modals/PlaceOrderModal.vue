@@ -85,8 +85,10 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
+import { useAuthStore } from '@/stores/authStore'
+const authStore = useAuthStore()
 const cartStore = useCartStore()
 const isSubmitting = ref(false)
 const errorList = reactive([])
@@ -111,6 +113,14 @@ const closeModal = () => {
   emit('close')
 }
 
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    orderData.applicationUserId = authStore.user.id
+    orderData.pickUpName = authStore.user.name
+    orderData.pickUpEmail = authStore.user.email
+  }
+})
+
 const submitOrder = async () => {
   try {
     isSubmitting.value = true
@@ -130,6 +140,21 @@ const submitOrder = async () => {
       return
     }
     // place order
+
+    orderData.orderTotal = cartStore.cartTotal
+
+    orderData.totalItem = cartStore.cartCount
+
+    orderData.orderDetailsDTO = Array.isArray(cartStore.cartItems)
+      ? cartStore.cartItems.map((item) => ({
+          menuItemId: item.id,
+          quantity: item.quantity,
+          itemName: item.name,
+          price: item.price,
+        }))
+      : []
+
+    console.log(orderData)
   } catch (err) {
     errorList.push(err.message)
   } finally {

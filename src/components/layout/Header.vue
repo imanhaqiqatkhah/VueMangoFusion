@@ -99,11 +99,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
-            <button
-              class="nav-link text-light px-2"
-              aria-current="page"
-              @click="authStore.signOut()"
-            >
+            <button class="nav-link text-light px-2" aria-current="page" @click="handleSignOut">
               خروج
             </button>
           </li>
@@ -150,9 +146,26 @@ import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useThemeStore } from '@/stores/storeTheme'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useSwal } from '@/composables/swal'
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const { showConfirm, showSuccess } = useSwal()
+
+const handleSignOut = async () => {
+  try {
+    const confirmResult = await showConfirm('آیا از خروج اطمینان دارید؟')
+
+    if (confirmResult.isConfirmed) {
+      await authStore.signOut()
+      showSuccess('با موفقیت خارج شدید')
+      // اگر نیاز به ریدایرکت دارید:
+      // router.push({ name: APP_ROUTE_NAMES.HOME })
+    }
+  } catch (error) {
+    console.log('Error in sign out:', error)
+  }
+}
 </script>
 
 <style scoped>

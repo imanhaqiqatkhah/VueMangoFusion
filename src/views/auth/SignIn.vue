@@ -4,6 +4,9 @@
       <div class="col-md-6 col-lg-4">
         <div class="card shadow">
           <div class="card-body p-4">
+            <div class="text-center">
+              <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
+            </div>
             <h2 class="text-center mb-4">ورود</h2>
             <form @submit.prevent="onSignInSubmit">
               <div class="mb-3">

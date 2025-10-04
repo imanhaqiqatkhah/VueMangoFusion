@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">ترتیب بندی</label>
-          <select class="form-select">
+          <select v-model="sortBy" class="form-select">
             <option value="orderHeaderId">id سفارش</option>
             <option value="orderTotal">کل پرداختی</option>
             <option value="pickUpName">نام مشتری</option>
@@ -25,7 +25,7 @@
 
         <div class="col-md-4 mb-3">
           <label class="form-label">ترتیب بندی بر اساس</label>
-          <select class="form-select">
+          <select v-model="sortDirection" class="form-select">
             <option value="asc">صعودی</option>
             <option value="desc">نزولی</option>
           </select>
@@ -44,7 +44,7 @@
         </div>
 
         <div class="col-md-4 mb-3 d-flex align-items-end">
-          <button class="btn btn-outline-secondary w-100">ریست فیلتر</button>
+          <button class="btn btn-outline-secondary w-100" @click="resetFilters">ریست فیلتر</button>
         </div>
       </div>
     </div>
@@ -194,6 +194,23 @@ const filteredOrders = computed(() => {
         order.pickUpPhoneNumber.toUpperCase().includes(query)
     )
   }
+
+  // apply sorting logic
+  result.sort((a, b) => {
+    let aValue = a[sortBy.value]
+    let bValue = b[sortBy.value]
+
+    if (typeof aValue == 'string') {
+      aValue = aValue.toLowerCase()
+      bValue = bValue.toLowerCase()
+    }
+
+    if (sortDirection.value == 'asc') {
+      return aValue > bValue ? 1 : -1
+    } else {
+      return aValue < bValue ? 1 : -1
+    }
+  })
 
   return result
 })

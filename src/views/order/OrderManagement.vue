@@ -135,6 +135,56 @@
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted, computed, reactive } from 'vue'
+import orderService from '@/services/orderService'
+import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+
+const orders = reactive([])
+const loading = ref(false)
+
+// filter and sorting
+const statusFilter = ref('')
+const searchQuery = ref('')
+const sortBy = ref('orderByHeaderId')
+const sortDirection = ref('desc')
+
+// pagination
+const itemsPerPage = 5
+const currentPage = ref(1)
+
+const resetFilters = () => {
+  statusFilter.value = ''
+  searchQuery.value = ''
+  sortBy.value = 'orderByHeaderId'
+  sortDirection.value = 'desc'
+  currentPage.value = 1
+}
+
+const filteredOrders = computed(() => {
+  let result = [...orders]
+  if (statusFilter.value) {
+    result = result.filter()
+  }
+})
+
+const fetchOrders = async () => {
+  orders.length = 0
+  loading.value = true
+  try {
+    var result = await orderService.getOrders()
+    orders.push(...result)
+    console.log(orders)
+  } catch (error) {
+    console.log('Error fetch orders:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchOrders)
+</script>
+
 <style scoped>
 * {
   direction: rtl;

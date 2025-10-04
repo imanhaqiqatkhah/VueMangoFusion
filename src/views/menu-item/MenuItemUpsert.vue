@@ -115,7 +115,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -124,15 +123,18 @@ import { CONFIG_IMAGE_URL } from '@/constants/config'
 import { CATEGORIES } from '@/constants/constants'
 import menuItemService from '@/services/menuItemService'
 import { useSwal } from '@/composables/swal'
+
 const { showConfirm, showError, showSuccess } = useSwal()
-const router = new useRouter()
-const route = new useRoute()
+const router = useRouter() // حذف new
+const route = useRoute() // حذف new
+
 const loading = ref(false)
 const isProcessing = ref(false)
-const errorList = reactive([])
+const errorList = ref([]) // بهتر است از ref استفاده شود
 const newUploadedImage = ref(null)
 const newUploadedImage_base64 = ref('')
-const menuItemIdForUpdate = route.params.id
+const menuItemIdForUpdate = ref(route.params.id || 0)
+
 const menuItemObj = reactive({
   name: '',
   description: '',
@@ -141,92 +143,95 @@ const menuItemObj = reactive({
   price: 0,
   image: '',
 })
-const formData = new FormData()
 
 onMounted(async () => {
-  if (!menuItemIdForUpdate) return
+  if (!menuItemIdForUpdate.value) return
+
   loading.value = true
   try {
-    const result = await menuItemService.getMenuItemById(menuItemIdForUpdate)
+    const result = await menuItemService.getMenuItemById(menuItemIdForUpdate.value)
     Object.assign(menuItemObj, result)
   } catch (err) {
     console.log('error while fetching menu item', err)
+    showError('خطا در دریافت اطلاعات منو')
   } finally {
     loading.value = false
   }
 })
 
 const handleFileChange = (event) => {
-  isProcessing.value = true
   const file = event.target.files[0]
   newUploadedImage.value = file
+
   if (file) {
     const reader = new FileReader()
     reader.onload = (e) => {
       newUploadedImage_base64.value = e.target.result
     }
     reader.readAsDataURL(file)
+  } else {
+    newUploadedImage_base64.value = ''
   }
-  isProcessing.value = false
 }
 
 const onFormSubmit = async (event) => {
   event.preventDefault()
   isProcessing.value = true
-  errorList.length = 0 // clear it
+  errorList.value = [] // استفاده از value برای ref
 
   // validations
-  if (menuItemObj.name.length < 3) {
-    errorList.push('نام منو باید حداقل 3 کاراکتر باشد')
+  if (!menuItemObj.name || menuItemObj.name.length < 3) {
+    errorList.value.push('نام منو باید حداقل 3 کاراکتر باشد')
   }
-  if (menuItemObj.price <= 0) {
-    errorList.push('قیمت منو باید بزرگتر از صفر باشد')
+  if (!menuItemObj.price || menuItemObj.price <= 0) {
+    errorList.value.push('قیمت منو باید بزرگتر از صفر باشد')
   }
-  if (menuItemObj.category === '') {
-    errorList.push('دسته بندی منو را انتخاب کنید')
+  if (!menuItemObj.category) {
+    errorList.value.push('دسته بندی منو را انتخاب کنید')
   }
-  if (newUploadedImage.value) {
-    // add to form data
-    formData.append('File', newUploadedImage.value)
-  } else {
-    if (menuItemIdForUpdate == 0) {
-      errorList.push('عکس منو را انتخاب کنید')
+  if (!newUploadedImage.value && !menuItemIdForUpdate.value) {
+    errorList.value.push('عکس منو را انتخاب کنید')
+  }
+
+  if (errorList.value.length > 0) {
+    isProcessing.value = false
+    return
+  }
+
+  try {
+    const formData = new FormData()
+
+    // اضافه کردن فایل اگر وجود دارد
+    if (newUploadedImage.value) {
+      formData.append('File', newUploadedImage.value)
     }
-  }
-  if (!errorList.length) {
-    // no errors
+
+    // اضافه کردن سایر فیلدها
     Object.entries(menuItemObj).forEach(([key, value]) => {
-      formData.append(key, value)
+      // اطمینان از اینکه price به عدد تبدیل شود
+      if (key === 'price') {
+        formData.append(key, Number(value))
+      } else {
+        formData.append(key, value)
+      }
     })
-    if (menuItemIdForUpdate == 0) {
-      menuItemService
-        .createMenuItem(formData)
-        .then(() => {
-          showSuccess('منو ایجاد شد')
-          router.push({ name: APP_ROUTE_NAMES.MENU_ITEM_LIST })
-        })
-        .catch((err) => {
-          isProcessing.value = false
-          showError('خطا در ایجاد منو')
-          console.log('Create Failed', err)
-        })
+
+    if (menuItemIdForUpdate.value) {
+      await menuItemService.updateMenuItem(menuItemIdForUpdate.value, formData)
+      showSuccess('منو با موفقیت آپدیت شد')
     } else {
-      // update
-      menuItemService
-        .updateMenuItem(menuItemIdForUpdate, formData)
-        .then(() => {
-          showSuccess('منو آپدیت شد')
-          router.push({ name: APP_ROUTE_NAMES.MENU_ITEM_LIST })
-        })
-        .catch((err) => {
-          isProcessing.value = false
-          showError('خطا در آپدیت منو')
-          console.log('Update Failed', err)
-        })
+      await menuItemService.createMenuItem(formData)
+      showSuccess('منو با موفقیت ایجاد شد')
     }
-    console.log(menuItemObj)
+
+    router.push({ name: APP_ROUTE_NAMES.MENU_ITEM_LIST })
+  } catch (err) {
+    console.log('Operation Failed', err)
+    const errorMessage = err.response?.data?.message || 'خطا در عملیات'
+    showError(errorMessage)
+  } finally {
+    isProcessing.value = false
   }
-  isProcessing.value = false
 }
 </script>
 

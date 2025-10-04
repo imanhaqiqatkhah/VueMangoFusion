@@ -34,7 +34,7 @@
                 <img
                   :src="CONFIG_IMAGE_URL + menuItem.image"
                   class="rounded-4 w-100 object-fit-cover"
-                  style="max-height: 300px; min-height: 200px"
+                  style="max-height: 300px; min-height: 300px"
                 />
                 <div class="position-absolute top-0 start-0 m-2 m-sm-3">
                   <span
@@ -49,12 +49,16 @@
               <div class="d-flex flex-column gap-3 gap-sm-4">
                 <!-- Name -->
                 <div>
-                  <div class="text-secondary small mb-1"><i class="bi bi-card-text"></i>نام</div>
+                  <div class="text-secondary small mb-1">
+                    <i class="bi bi-card-text ms-1"></i>نام
+                  </div>
                   <h4 class="fw-bold mb-0 fe-5 fe-sm-4">{{ menuItem.name }}</h4>
                 </div>
                 <!-- Category -->
                 <div>
-                  <div class="text-secondary small mb-1"><i class="bi bi-tag"></i>دسته بندی</div>
+                  <div class="text-secondary small mb-1">
+                    <i class="bi bi-tag ms-1"></i>دسته بندی
+                  </div>
                   <div
                     class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
                   >
@@ -64,7 +68,7 @@
                 <!-- Special Tag -->
                 <div v-if="menuItem.specialTag">
                   <div class="text-secondary small mb-1">
-                    <i class="bi bi-star">تگ یا هشتگ اجتماعی</i>
+                    <i class="bi bi-star ms-1"></i>تگ یا هشتگ اجتماعی
                   </div>
                   <div
                     class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
@@ -75,7 +79,7 @@
                 <!-- Description -->
                 <div>
                   <div class="text-secondary small mb-1">
-                    <i class="bi bi-card-text"></i>توضیحات
+                    <i class="bi bi-card-text ms-1"></i>توضیحات
                   </div>
                   <p class="mb-0">{{ menuItem.description }}</p>
                 </div>

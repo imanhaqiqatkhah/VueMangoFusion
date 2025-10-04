@@ -94,7 +94,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order in filteredOrders" :key="order.orderHeaderId">
+            <tr v-for="order in paginatedOrders" :key="order.orderHeaderId">
               <td># {{ order.orderHeaderId }}</td>
               <td>{{ order.pickUpName }}</td>
               <td>
@@ -120,8 +120,82 @@
       </div>
 
       <!-- Pagination -->
-      <!-- کد pagination بدون تغییر -->
+      <nav aria-label="Order pagination" class="mt-4 d-flex justify-content-start">
+        <ul class="pagination pagination-md">
+          <!-- First page button -->
+          <li class="page-item">
+            <a
+              class="page-link text-primary border-primary"
+              href="#"
+              aria-label="First"
+              @click="changePage(1)"
+            >
+              <span aria-hidden="true">&laquo;</span>
+              <span class="visually-hidden">صفحه اول</span>
+            </a>
+          </li>
+          <!-- Previous button -->
+          <li class="page-item">
+            <a
+              class="page-link text-primary border-primary"
+              href="#"
+              aria-label="Previous"
+              @click="changePage(currentPage - 1)"
+            >
+              <span aria-hidden="true">&lsaquo;</span>
+              <span class="visually-hidden">صفحه قبلی</span>
+            </a>
+          </li>
+
+          <!-- Page numbers with limited display -->
+          <template v-for="pageNum in displayedPageNumber" :key="pageNum">
+            <li class="page-item disabled" v-if="pageNum === '...'">
+              <span class="page-link border-primary">...</span>
+            </li>
+            <li class="page-item" v-else>
+              <a
+                :class="
+                  pageNum === currentPage
+                    ? 'bg-primary border-primary text-white'
+                    : 'text-primary border-primary'
+                "
+                class="page-link border-primary"
+                href="#"
+                @click="changePage(pageNum)"
+              >
+                {{ pageNum }}
+              </a>
+            </li>
+          </template>
+          <!-- Next button -->
+          <li class="page-item">
+            <a
+              href="#"
+              aria-label="Next"
+              class="page-link text-primary border-primary"
+              @click="changePage(currentPage + 1)"
+            >
+              <span aria-hidden="true">&rsaquo;</span>
+              <span class="visually-hidden">صفحه بعدی</span>
+            </a>
+          </li>
+
+          <!-- Last page button -->
+          <li class="page-item">
+            <a
+              href="#"
+              class="page-link text-primary border-primary"
+              aria-label="Last"
+              @click="changePage(totalPages)"
+            >
+              <span aria-hidden="true">&raquo;</span>
+              <span class="visually-hidden">صفحه قبلی</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
+    <!-- Order Details Modal Component -->
   </div>
 </template>
 
@@ -216,6 +290,60 @@ const filteredOrders = computed(() => {
   })
 
   return result
+})
+
+const totalPages = computed(() => Math.ceil(filteredOrders.value.length / itemsPerPage))
+
+const paginatedOrders = computed(() => {
+  // 20 records
+  // page size 5
+  // 2nd page
+  // start 1st 0-4, 5-9
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  // 1st - 0
+  // 2st - 5
+  const endIndex = startIndex + itemsPerPage
+  return filteredOrders.value.slice(startIndex, endIndex)
+})
+
+const changePage = (page) => {
+  if (page < 1 || page > totalPages.value) return
+  currentPage.value = page
+}
+
+const displayedPageNumber = computed(() => {
+  const total = totalPages.value
+  const current = currentPage.value
+  const delta = 1 // Number of pages to show before and after current page
+
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+
+  let range = []
+
+  // always want to include first page
+  range.push(1)
+
+  const rangeStart = Math.max(2, current - delta)
+  const rangeEnd = Math.min(total - 1, current + delta)
+
+  if (rangeStart > 2) {
+    range.push('...')
+  }
+
+  for (let i = rangeStart; i < rangeEnd; i++) {
+    range.push(i)
+  }
+
+  if (rangeEnd < total - 1) {
+    range.push('...')
+  }
+  if (total > 1) {
+    range.push(total)
+  }
+
+  return range
 })
 
 const fetchOrders = async () => {

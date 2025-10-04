@@ -35,7 +35,12 @@
       <div class="row mt-2">
         <div class="col-md-8 md-3">
           <label class="form-label">جستجو</label>
-          <input type="text" class="form-control" placeholder="جستجو با نام، ایمیل یا شماره تلفن" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="form-control"
+            placeholder="جستجو با نام، ایمیل یا شماره تلفن"
+          />
         </div>
 
         <div class="col-md-4 mb-3 d-flex align-items-end">
@@ -179,6 +184,17 @@ const filteredOrders = computed(() => {
       (order) => order.status.toUpperCase() === statusFilter.value.toUpperCase()
     )
   }
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toUpperCase()
+    result = result.filter(
+      (order) =>
+        order.pickUpEmail.toUpperCase().includes(query) ||
+        order.pickUpName.toUpperCase().includes(query) ||
+        order.pickUpPhoneNumber.toUpperCase().includes(query)
+    )
+  }
+
   return result
 })
 

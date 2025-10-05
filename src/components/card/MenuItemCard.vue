@@ -24,7 +24,9 @@
         <div class="d-flex justify-content-between align-items-end mb-2">
           <h5 class="card-title mb-0 small fw-semibold">{{ menuItem.name }}</h5>
           <div class="d-flex align-items-center me-2">
-            <span class="fw-semibold text-primary">{{ menuItem.price.toFixed(3) }}</span>
+            <span class="fw-semibold text-primary"
+              >{{ (menuItem.price / 10).toFixed(3) }} تومان</span
+            >
           </div>
         </div>
         <!-- Description -->

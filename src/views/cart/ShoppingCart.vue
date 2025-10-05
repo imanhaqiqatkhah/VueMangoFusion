@@ -96,7 +96,9 @@
                   <hr />
                   <div class="d-flex justify-content-between mb-3">
                     <span class="fw-bold">قیمت کلی</span>
-                    <span class="fw-bold test-primary">{{ cartStore.cartTotal.toFixed(3) }}</span>
+                    <span class="fw-bold test-primary"
+                      >{{ (cartStore.cartTotal / 10).toFixed(3) }} تومان</span
+                    >
                   </div>
                   <button class="btn btn-primary w-100" @click="checkout">
                     <i class="bi bi-cash-stack"></i>اقدام برای پرداخت

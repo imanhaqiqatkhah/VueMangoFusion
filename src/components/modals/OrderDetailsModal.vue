@@ -76,7 +76,9 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="text-body-secondary small">جمع کل</span>
-                      <span class="fw-bold text-primary">{{ order.orderTotal.toFixed(3) }}</span>
+                      <span class="fw-bold text-primary"
+                        >{{ (order.orderTotal / 10).toFixed(3) }} تومان</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -105,7 +107,9 @@
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
                       <span class="badge bg-primary-subtle text-primary">{{ item.quantity }} </span
-                      >*<span class="text-body-secondary small">{{ item.price.toFixed(3) }}</span>
+                      >*<span class="text-body-secondary small"
+                        >{{ (item.price / 10).toFixed(3) }} تومان</span
+                      >
                     </div>
                   </div>
                 </template>

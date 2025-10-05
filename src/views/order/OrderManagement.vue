@@ -102,7 +102,7 @@
                 <div class="text-body-secondary small">{{ order.pickUpEmail }}</div>
               </td>
               <td>{{ order.totalItem }}</td>
-              <td>{{ order.orderTotal.toLocaleString() }} تومان</td>
+              <td>{{ (order.orderTotal / 10).toFixed(3) }} تومان</td>
               <!-- اضافه کردن فرمت قیمت -->
               <td>
                 <span :class="getStatusBadgeClass(order.status)" class="badge rounded-pill">

@@ -28,7 +28,7 @@
         </div>
         <div class="d-flex align-items-center">
           <i class="bi bi-cash-coin text-primary ps-2"></i>
-          <span class="fw-bold">{{ order.orderTotal }}</span>
+          <span class="fw-bold">{{ (order.orderTotal / 10).toFixed(3) }} تومان</span>
         </div>
       </div>
 
@@ -48,7 +48,7 @@
             </div>
             <div class="d-flex align-items-center">
               <span class="badge bg-primary-subtle text-primary ms-2">{{ item.quantity }} *</span>
-              <span class="text-body-secondary">{{ item.price }}</span>
+              <span class="text-body-secondary">{{ (item.price / 10).toFixed(3) }} تومان</span>
             </div>
           </div>
           <Rating @rate="onRateItem" :rating="item.rating" :item-id="item.orderDetailId" />

@@ -39,7 +39,7 @@
                 <div class="position-absolute top-0 start-0 m-2 m-sm-3">
                   <span
                     class="badge bg-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 d-flex align-items-center gap-1 fe-6 fe-sm-5"
-                    >{{ menuItem.price.toFixed(3) }}
+                    >{{ (menuItem.price / 10).toFixed(3) }} تومان
                   </span>
                 </div>
               </div>

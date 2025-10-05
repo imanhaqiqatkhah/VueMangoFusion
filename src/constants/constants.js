@@ -1,4 +1,9 @@
-export const CATEGORIES = ['Appetizer', 'Main Course', 'Bread', 'Beverage']
+export const CATEGORIES = [
+  'دیتاسنتر ایران',
+  'دیتاسنتر آمریکا',
+  'دیتاسنتر اروپا',
+  'دیتاسنتر اقیانوسیه',
+]
 
 export const SORT_PRICE_LOW_HIGH = 'قیمت از پایین به بالا'
 export const SORT_PRICE_HIGH_LOW = 'قیمت از بالا به پایین'

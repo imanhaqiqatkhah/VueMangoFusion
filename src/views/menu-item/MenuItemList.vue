@@ -55,7 +55,7 @@
                       {{ menuItem.category }}
                     </span>
                   </td>
-                  <td class="fw-semibold small">{{ menuItem.price.toFixed(3) }}</td>
+                  <td class="fw-semibold small">{{ (menuItem.price / 10).toFixed(3) }} تومان</td>
                   <td>
                     <span class="badge bg-info bg-opacity-10 text-info small">
                       {{ menuItem.specialTag }}

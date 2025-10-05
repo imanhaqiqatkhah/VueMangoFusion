@@ -2,7 +2,13 @@
   <div class="d-flex align-items-center">
     <small class="text-secondary ms-2">رتبه بندی این آیتم:</small>
     <div class="d-flex">
-      <div v-for="star in 5" :key="star" class="star-rating ms-1" @click="onRatingUpdate(star)">
+      <div
+        v-for="star in 5"
+        :key="star"
+        class="star-rating ms-1"
+        @click="!readonly && onRatingUpdate(star)"
+        :class="{ 'cursor-pointer': !readonly }"
+      >
         <i
           :class="rating && rating >= star ? 'bi-star-fill' : 'bi-star'"
           class="text-warning"
@@ -38,6 +44,10 @@ const props = defineProps({
   rating: {
     type: [Number],
     default: 0,
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
   },
 })
 

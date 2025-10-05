@@ -110,7 +110,7 @@
                 </span>
               </td>
               <td>
-                <button class="btn btn-sm btn-primary">
+                <button class="btn btn-sm btn-primary" @click="viewOrderDetails(order)">
                   <i class="bi bi-card-checklist"></i>&nbsp; مشاهده جزئیات
                 </button>
               </td>
@@ -196,10 +196,12 @@
       </nav>
     </div>
     <!-- Order Details Modal Component -->
+    <OrderDetailsModal :order="selectedOrder" @close="closeOrderDetails" />
   </div>
 </template>
 
 <script setup>
+import OrderDetailsModal from '@/components/modals/OrderDetailsModal.vue'
 import { ref, onMounted, computed, reactive } from 'vue'
 import orderService from '@/services/orderService'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
@@ -207,6 +209,7 @@ import { ORDER_STATUS, ORDER_STATUS_OPTIONS, ORDER_STATUS_PERSIAN } from '@/cons
 
 const orders = reactive([])
 const loading = ref(false)
+const selectedOrder = ref(null)
 
 // filter and sorting
 const statusFilter = ref('')
@@ -240,6 +243,12 @@ const resetFilters = () => {
   sortBy.value = 'orderHeaderId'
   sortDirection.value = 'desc'
   currentPage.value = 1
+}
+const viewOrderDetails = (order) => {
+  selectedOrder.value = { ...order }
+}
+const closeOrderDetails = (order) => {
+  selectedOrder.value = null
 }
 
 const updateSort = (field) => {

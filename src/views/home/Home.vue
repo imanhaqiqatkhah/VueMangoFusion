@@ -86,7 +86,10 @@
             @show-details="handleShowDetails"
           />
 
-          <div class="text-center py-5 display-4 mx-auto text-body-secondary mb-3 d-block" v-else>
+          <div
+            class="text-center py-5 display-4 mx-auto text-body-secondary mb-3 d-block"
+            v-if="filteredItems.length === 0"
+          >
             <i class="bi bi-emoji-frown"></i>
             <p class="lead text-body-secondary">هیچ آیتمی یافت نشد</p>
           </div>

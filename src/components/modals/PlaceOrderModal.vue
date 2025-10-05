@@ -91,9 +91,11 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import orderService from '@/services/orderService'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+import { useSwal } from '@/composables/swal'
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 const router = useRouter()
+const { showSuccess, showError } = useSwal()
 const isSubmitting = ref(false)
 const errorList = reactive([])
 
@@ -129,24 +131,31 @@ const submitOrder = async () => {
   try {
     isSubmitting.value = true
     errorList.length = 0
-    if (orderData.pickUpName === undefined || orderData.pickUpName.length === 0) {
+
+    // اعتبارسنجی‌های بهتر
+    if (!orderData.pickUpName || orderData.pickUpName.trim().length === 0) {
       errorList.push('نام را وارد کنید')
     }
-    if (orderData.pickUpPhoneNumber === undefined || orderData.pickUpPhoneNumber.length === 0) {
+    if (!orderData.pickUpPhoneNumber || orderData.pickUpPhoneNumber.trim().length === 0) {
       errorList.push('شماره تلفن را وارد کنید')
     }
-    if (orderData.pickUpEmail === undefined || orderData.pickUpEmail.length === 0) {
+    if (!orderData.pickUpEmail || orderData.pickUpEmail.trim().length === 0) {
       errorList.push('ایمیل را وارد کنید')
+    }
+
+    // اعتبارسنجی ایمیل
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (orderData.pickUpEmail && !emailRegex.test(orderData.pickUpEmail)) {
+      errorList.push('فرمت ایمیل نامعتبر است')
     }
 
     if (errorList.length > 0) {
       isSubmitting.value = false
       return
     }
-    // place order
 
+    // آماده‌سازی داده‌های سفارش
     orderData.orderTotal = cartStore.cartTotal
-
     orderData.totalItem = cartStore.cartCount
 
     orderData.orderDetailsDTO = Array.isArray(cartStore.cartItems)
@@ -158,17 +167,40 @@ const submitOrder = async () => {
         }))
       : []
 
-    console.log(orderData)
+    console.log('Order data:', orderData)
+
+    // ارسال سفارش
     const orderHeader = await orderService.createOrder(orderData)
+
     if (orderHeader && orderHeader.orderHeaderId > 0) {
+      // ✅ حذف سبد خرید بعد از ثبت موفقیت‌آمیز سفارش
+      cartStore.clearCart()
+
+      showSuccess('سفارش شما با موفقیت ثبت شد')
+
+      // هدایت به صفحه تأیید سفارش
       router.push({
         name: APP_ROUTE_NAMES.ORDER_CONFIRM,
         params: { orderId: orderHeader.orderHeaderId },
       })
+
+      // بستن مودال
+      closeModal()
+    } else {
+      throw new Error('پاسخ نامعتبر از سرور')
     }
-    console.log(orderHeader)
   } catch (err) {
-    errorList.push(err.message)
+    console.error('Error in submitOrder:', err)
+
+    // نمایش خطای بهتر
+    const errorMessage =
+      err.response?.data?.errorMessages?.join(', ') ||
+      err.response?.data?.message ||
+      err.message ||
+      'خطا در ثبت سفارش'
+
+    errorList.push(errorMessage)
+    showError('خطا در ثبت سفارش')
   } finally {
     isSubmitting.value = false
   }

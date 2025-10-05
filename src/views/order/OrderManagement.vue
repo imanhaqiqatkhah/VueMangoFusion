@@ -229,10 +229,10 @@ const getStatusPersian = (status) => {
 // تابع برای کلاس badge بر اساس وضعیت
 const getStatusBadgeClass = (status) => {
   const statusClasses = {
-    Confirmed: 'bg-primary',
-    'Ready for Pickup': 'bg-success',
-    Completed: 'bg-info',
-    Cancelled: 'bg-danger',
+    Confirmed: 'bg-warning-subtle text-warning-emphasis',
+    'Ready for Pickup': 'bg-info-subtle text-info-emphasis',
+    Completed: 'bg-primary-subtle text-primary-emphasis',
+    Cancelled: 'bg-danger text-danger-emphasis',
   }
   return statusClasses[status] || 'bg-secondary'
 }

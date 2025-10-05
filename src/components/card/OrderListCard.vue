@@ -6,7 +6,9 @@
           <i class="bi bi-receipt-cutoff text-primary ps-2" style="font-size: 2rem"></i>
           <h5 class="card-title mb-0"># سفارش {{ order.orderHeaderId }}</h5>
         </div>
-        <span class="bg-danger-subtle text-danger-emphasis rounded p-2">{{ order.status }}</span>
+        <span :class="getStatusBadgeClass(order.status)" class="badge rounded-pill">
+          {{ getStatusPersian(order.status) }}
+        </span>
       </div>
     </div>
     <div class="card-body">
@@ -52,6 +54,23 @@
 </template>
 
 <script setup>
+import { ORDER_STATUS, ORDER_STATUS_OPTIONS, ORDER_STATUS_PERSIAN } from '@/constants/constants'
+
+const getStatusPersian = (status) => {
+  return ORDER_STATUS_PERSIAN[status] || status
+}
+
+// تابع برای کلاس badge بر اساس وضعیت
+const getStatusBadgeClass = (status) => {
+  const statusClasses = {
+    Confirmed: 'bg-warning-subtle text-warning-emphasis',
+    'Ready for Pickup': 'bg-info-subtle text-info-emphasis',
+    Completed: 'bg-primary-subtle text-primary-emphasis',
+    Cancelled: 'bg-danger text-danger-emphasis',
+  }
+  return statusClasses[status] || 'bg-secondary'
+}
+
 const props = defineProps({
   order: {
     type: Object,

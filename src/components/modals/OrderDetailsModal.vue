@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="order"
-    class="position-fixed top-0 end-0 w-100 d-flex justify-content-center align-items-center bg-black bg-opacity-50"
+    class="position-fixed top-0 end-0 w-100 h-100 d-flex justify-content-center align-items-center bg-black bg-opacity-50"
     style="z-index: 1050"
   >
     <div
@@ -15,7 +15,7 @@
           >
             <div class="d-flex align-items-center">
               <i class="bi bi-receipt-cutoff ps-1 text-primary"></i>
-              <h5 class="mb-0 fe-5 text-primary"># سفارش</h5>
+              <h5 class="mb-0 fe-5 text-primary"># سفارش {{ order.orderHeaderId }}</h5>
             </div>
             <button
               @click="closeModal"
@@ -27,10 +27,13 @@
             class="d-flex flex-column flex-sm-row justify-content-between align-items-end align-items-sm-center gap-2"
           >
             <div class="d-flex align-items-center">
-              <i class="bi bi-calender ps-1"></i>
-              <span class="text-body-secondary">تاریخ ثبت سفارش</span>
+              <i class="bi bi-calendar ps-1 text-primary"></i>
+              <span class="text-body-secondary small me-2">تاریخ ثبت: </span>
+              <span class="fw-medium"> {{ formatOrderDate(order.orderDate) }} </span>
             </div>
-            <span>وضعیت</span>
+            <span :class="getStatusBadgeClass(order.status)" class="badge rounded-pill px-3 py-2">
+              {{ getStatusPersian(order.status) }}
+            </span>
           </div>
         </div>
         <div class="modal-body-scrollable p-3 p-sm-4" style="max-height: 70vh; overflow-y: auto">
@@ -45,15 +48,15 @@
                   <div class="d-flex flex-column gap-2">
                     <div class="d-flex align-items-center">
                       <i class="bi bi-person-fill ps-1"></i>
-                      <span class="small">نام</span>
+                      <span class="small">{{ order.pickUpName }}</span>
                     </div>
                     <div class="d-flex align-items-center">
                       <i class="bi bi-telephone-fill ps-1"></i>
-                      <span class="small">شماره تلفن</span>
+                      <span class="small">{{ order.pickUpPhoneNumber }}</span>
                     </div>
                     <div class="d-flex align-items-center">
                       <i class="bi bi-envelope ps-1"></i>
-                      <span class="small text-break">ایمیل</span>
+                      <span class="small text-break">{{ order.pickUpEmail }}</span>
                     </div>
                   </div>
                 </div>
@@ -69,11 +72,11 @@
                   <div class="d-flex flex-column gap-2">
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="text-body-secondary small">کل آیتم</span>
-                      <span class="fw-bold">تعداد</span>
+                      <span class="fw-bold">{{ order.totalItem }}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="text-body-secondary small">جمع کل</span>
-                      <span class="fw-bold text-primary">$$$</span>
+                      <span class="fw-bold text-primary">{{ order.orderTotal.toFixed(3) }}</span>
                     </div>
                   </div>
                 </div>
@@ -88,21 +91,23 @@
                 <h6 class="card-title mb-0">آیتم های سفارش</h6>
               </div>
               <div class="table-responsive">
-                <template>
+                <template v-if="order.orderDetails?.length">
                   <div
+                    v-for="item in order.orderDetails"
+                    :key="item.orderDetails"
                     class="d-flex justify-content-between align-items-center py-2 border-bottom gap-3"
                   >
                     <div class="d-flex align-items-center flex-grow-1 min-width-0">
                       <i class="bi bi-dash"></i>
-                      <span class="text-truncate small">نام</span>
+                      <span class="text-truncate small">{{ item.menuItem.name }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                      <span class="badge bg-primary-subtle text-primary">تعداد</span
-                      ><span class="text-body-secondary small">قیمت</span>
+                      <span class="badge bg-primary-subtle text-primary">{{ item.quantity }} </span
+                      >*<span class="text-body-secondary small">{{ item.price }}</span>
                     </div>
                   </div>
                 </template>
-                <div class="text-center text-body-secondary py-3 small">
+                <div v-else class="text-center text-body-secondary py-3 small">
                   هیچ آیتمی در سفارش نیست
                 </div>
               </div>
@@ -151,21 +156,26 @@
 </template>
 
 <script setup>
+import { ORDER_STATUS, ORDER_STATUS_OPTIONS, ORDER_STATUS_PERSIAN } from '@/constants/constants'
+import { usePersianDate } from '@/composables/persianDate'
 const emit = defineEmits(['close'])
 
+const getStatusPersian = (status) => {
+  return ORDER_STATUS_PERSIAN[status] || status
+}
 const props = defineProps({
   order: {
     type: Object,
     required: false,
     default: () => ({
       orderHeaderId: '',
-      pickupName: '',
-      pickupPhoneNumber: '',
-      pickupEmail: '',
+      pickUpName: '',
+      pickUpPhoneNumber: '',
+      pickUpEmail: '',
       status: '',
       orderTotal: 0,
       orderDate: '',
-      totalItems: 0,
+      totalItem: 0,
       orderDetails: [],
     }),
   },
@@ -173,6 +183,59 @@ const props = defineProps({
 
 const closeModal = () => {
   emit('close')
+}
+
+// تابع برای کلاس badge بر اساس وضعیت
+const getStatusBadgeClass = (status) => {
+  const statusClasses = {
+    Confirmed: 'bg-warning-subtle text-warning-emphasis',
+    'Ready for Pickup': 'bg-info-subtle text-info-emphasis',
+    Completed: 'bg-primary-subtle text-primary-emphasis',
+    Cancelled: 'bg-danger text-danger-emphasis',
+  }
+  return statusClasses[status] || 'bg-secondary'
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+
+  const date = new Date(dateString)
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+const { toPersianDate, getPersianMonthName } = usePersianDate()
+
+const formatOrderDate = (dateString) => {
+  if (!dateString) return 'تاریخ نامعتبر'
+
+  const date = new Date(dateString)
+  const persianDate = toPersianDate(date)
+  const time = date.toLocaleTimeString('fa-IR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  return `${persianDate} - ${time}`
+}
+
+// یا فرمت کامل‌تر
+const formatOrderDateDetailed = (dateString) => {
+  if (!dateString) return 'تاریخ نامعتبر'
+
+  const date = new Date(dateString)
+  const jalaaliDate = toPersianDate(date)
+  const time = date.toLocaleTimeString('fa-IR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  return `تاریخ: ${jalaaliDate} | ساعت: ${time}`
 }
 </script>
 

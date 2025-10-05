@@ -31,7 +31,7 @@
               >خانه</router-link
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="authStore.isAuthenticated">
             <router-link
               class="nav-link text-light"
               aria-current="page"
@@ -39,7 +39,7 @@
               >سفارشات
             </router-link>
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" v-if="authStore.isAdmin">
             <a
               class="nav-link dropdown-toggle text-light"
               href="#"

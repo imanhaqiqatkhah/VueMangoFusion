@@ -37,7 +37,11 @@
           <i class="bi bi-card-list text-primary ps-2"></i>
           <h6 class="mb-0">آیتم سفارش</h6>
         </div>
-        <div class="mb-3" v-for="item in order.orderDetails" :key="item.orderDetailId">
+        <div
+          class="mb-3 pb-2 border-bottom"
+          v-for="item in order.orderDetails"
+          :key="item.orderDetailId"
+        >
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="d-flex align-items-center">
               <span class="text-truncate ms-3">{{ item.menuItem.name }}</span>
@@ -47,6 +51,7 @@
               <span class="text-body-secondary">{{ item.price }}</span>
             </div>
           </div>
+          <Rating @rate="onRateItem" :item-id="item.orderDetailId" />
         </div>
       </div>
     </div>
@@ -55,6 +60,7 @@
 
 <script setup>
 import { ORDER_STATUS, ORDER_STATUS_OPTIONS, ORDER_STATUS_PERSIAN } from '@/constants/constants'
+import Rating from '../shared/Rating.vue'
 
 const getStatusPersian = (status) => {
   return ORDER_STATUS_PERSIAN[status] || status
@@ -70,13 +76,17 @@ const getStatusBadgeClass = (status) => {
   }
   return statusClasses[status] || 'bg-secondary'
 }
-
+const emit = defineEmits(['rate'])
 const props = defineProps({
   order: {
     type: Object,
     required: true,
   },
 })
+
+const onRateItem = (itemId, rating) => {
+  emit('rate', itemId, rating)
+}
 </script>
 
 <style scoped>

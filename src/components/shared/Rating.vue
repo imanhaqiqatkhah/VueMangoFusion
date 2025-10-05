@@ -3,9 +3,14 @@
     <small class="text-secondary ms-2">رتبه بندی این آیتم:</small>
     <div class="d-flex">
       <div v-for="star in 5" :key="star" class="star-rating ms-1" @click="onRatingUpdate(star)">
-        <i class="bi-star text-warning" width="16"></i>
+        <i
+          :class="rating && rating >= star ? 'bi-star-fill' : 'bi-star'"
+          class="text-warning"
+          width="16"
+        ></i>
       </div>
     </div>
+    <div v-if="rating" class="me-2 text-secondary small">({{ rating }})</div>
     <div
       v-if="isProcessing"
       class="spinner-border spinner-border-sm text-warning me-2"
@@ -29,6 +34,10 @@ const props = defineProps({
   itemId: {
     type: [Number],
     required: true,
+  },
+  rating: {
+    type: [Number],
+    default: 0,
   },
 })
 

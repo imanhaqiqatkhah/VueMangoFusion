@@ -196,7 +196,11 @@
       </nav>
     </div>
     <!-- Order Details Modal Component -->
-    <OrderDetailsModal :order="selectedOrder" @close="closeOrderDetails" />
+    <OrderDetailsModal
+      :order="selectedOrder"
+      @close="closeOrderDetails"
+      @status-updated="fetchOrders"
+    />
   </div>
 </template>
 

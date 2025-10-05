@@ -42,7 +42,7 @@
               <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                   <div class="d-flex align-items-center mb-3">
-                    <i class="bu bi-person-circle ps-1"></i>
+                    <i class="bi bi-person-circle ps-1"></i>
                     <h6 class="card-title mb-0">اطلاعات گیرنده</h6>
                   </div>
                   <div class="d-flex flex-column gap-2">
@@ -99,11 +99,13 @@
                   >
                     <div class="d-flex align-items-center flex-grow-1 min-width-0">
                       <i class="bi bi-dash"></i>
-                      <span class="text-truncate small">{{ item.menuItem.name }}</span>
+                      <span class="text-truncate small">{{
+                        item.menuItem?.name || item.itemName
+                      }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
                       <span class="badge bg-primary-subtle text-primary">{{ item.quantity }} </span
-                      >*<span class="text-body-secondary small">{{ item.price }}</span>
+                      >*<span class="text-body-secondary small">{{ item.price.toFixed(3) }}</span>
                     </div>
                   </div>
                 </template>
@@ -118,32 +120,66 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body p-3">
               <div class="d-flex align-items-center mb-3">
-                <i class="bi bi-gear texttext-primary ms-2" width="20"></i>
+                <i class="bi bi-gear text-primary ms-2" width="20"></i>
                 <h6 class="card-title mb-0">وضعیت سفارش</h6>
               </div>
               <!-- Status Flow Button -->
               <div
                 class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 mb-3"
               >
-                <button class="btn btn-primary flex-fill">
+                <button
+                  :class="[
+                    'btn flex-fill',
+                    getStatusButtonClass(ORDER_STATUS_CONFIRMED),
+                    isStatusDisabled(ORDER_STATUS_CONFIRMED) ? 'opacity-50' : '',
+                  ]"
+                  :disabled="isStatusDisabled(ORDER_STATUS_CONFIRMED)"
+                >
                   <i class="bi bi-clock ms-1"></i>
                   <span class="small">تایید شده</span>
                 </button>
+
                 <div class="d-none d-sm-block text-secondary">
                   <i class="bi bi-arrow-left"></i>
                 </div>
-                <button class="btn btn-primary flex-fill">
-                  <i class="bi bi-gear ms-1"></i><span class="small">آماده برای تحویل</span>
+
+                <button
+                  :class="[
+                    'btn flex-fill',
+                    getStatusButtonClass(ORDER_STATUS_READY_FOR_PICKUP),
+                    isStatusDisabled(ORDER_STATUS_READY_FOR_PICKUP) ? 'opacity-50' : '',
+                  ]"
+                  @click="updateStatus(ORDER_STATUS_READY_FOR_PICKUP)"
+                  :disabled="isStatusDisabled(ORDER_STATUS_READY_FOR_PICKUP)"
+                >
+                  <i class="bi bi-gear ms-1"></i>
+                  <span class="small">آماده برای تحویل</span>
                 </button>
+
                 <div class="d-none d-sm-block text-secondary">
                   <i class="bi bi-arrow-left"></i>
                 </div>
-                <button class="'btn btn-primary flex-fill',">
-                  <i class="bi bi-check ms-1"></i><span class="small">تحویل داده شده</span>
+
+                <button
+                  :class="[
+                    'btn flex-fill',
+                    getStatusButtonClass(ORDER_STATUS_COMPLETED),
+                    isStatusDisabled(ORDER_STATUS_COMPLETED) ? 'opacity-50' : '',
+                  ]"
+                  @click="updateStatus(ORDER_STATUS_COMPLETED)"
+                  :disabled="isStatusDisabled(ORDER_STATUS_COMPLETED)"
+                >
+                  <i class="bi bi-check ms-1"></i>
+                  <span class="small">تکمیل شده</span>
                 </button>
               </div>
               <!-- Cancel Button -->
-              <button class="btn btn-outline-danger w-100">
+              <button
+                class="btn btn-outline-danger w-100"
+                :class="{ 'opacity-50': isStatusDisabled(ORDER_STATUS_CANCELLED) }"
+                @click="updateStatus(ORDER_STATUS_CANCELLED)"
+                :disabled="isStatusDisabled(ORDER_STATUS_CANCELLED)"
+              >
                 <i class="bi bi-x-circle ms-1"></i>
                 <span class="small">کنسل سفارش</span>
               </button>
@@ -156,13 +192,22 @@
 </template>
 
 <script setup>
-import { ORDER_STATUS, ORDER_STATUS_OPTIONS, ORDER_STATUS_PERSIAN } from '@/constants/constants'
+import { ref } from 'vue'
+import { useSwal } from '@/composables/swal'
 import { usePersianDate } from '@/composables/persianDate'
-const emit = defineEmits(['close'])
+import orderService from '@/services/orderService'
+import {
+  ORDER_STATUS_CANCELLED,
+  ORDER_STATUS_COMPLETED,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_READY_FOR_PICKUP,
+  ORDER_STATUS_PERSIAN,
+} from '@/constants/constants'
 
-const getStatusPersian = (status) => {
-  return ORDER_STATUS_PERSIAN[status] || status
-}
+const { showSuccess, showError, showConfirm } = useSwal()
+const { toPersianDate } = usePersianDate()
+
+// Props
 const props = defineProps({
   order: {
     type: Object,
@@ -181,61 +226,138 @@ const props = defineProps({
   },
 })
 
+// Emits
+const emit = defineEmits(['close', 'status-updated'])
+
+// State
+const isLoading = ref(false)
+
+// ترتیب منطقی وضعیت‌ها
+const STATUS_FLOW = [ORDER_STATUS_CONFIRMED, ORDER_STATUS_READY_FOR_PICKUP, ORDER_STATUS_COMPLETED]
+
+// توابع
 const closeModal = () => {
   emit('close')
+}
+
+const getStatusPersian = (status) => {
+  return ORDER_STATUS_PERSIAN[status] || status
 }
 
 // تابع برای کلاس badge بر اساس وضعیت
 const getStatusBadgeClass = (status) => {
   const statusClasses = {
-    Confirmed: 'bg-warning-subtle text-warning-emphasis',
-    'Ready for Pickup': 'bg-info-subtle text-info-emphasis',
-    Completed: 'bg-primary-subtle text-primary-emphasis',
-    Cancelled: 'bg-danger text-danger-emphasis',
+    [ORDER_STATUS_CONFIRMED]: 'bg-warning-subtle text-warning-emphasis',
+    [ORDER_STATUS_READY_FOR_PICKUP]: 'bg-info-subtle text-info-emphasis',
+    [ORDER_STATUS_COMPLETED]: 'bg-success-subtle text-success-emphasis',
+    [ORDER_STATUS_CANCELLED]: 'bg-danger-subtle text-danger-emphasis',
   }
   return statusClasses[status] || 'bg-secondary'
 }
 
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
+// تابع برای کلاس دکمه‌ها بر اساس وضعیت
+const getStatusButtonClass = (status) => {
+  const currentStatus = props.order.status
 
-  const date = new Date(dateString)
-  return date.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  if (currentStatus === status) {
+    return (
+      {
+        [ORDER_STATUS_CONFIRMED]: 'btn-warning',
+        [ORDER_STATUS_READY_FOR_PICKUP]: 'btn-info',
+        [ORDER_STATUS_COMPLETED]: 'btn-success',
+        [ORDER_STATUS_CANCELLED]: 'btn-danger',
+      }[status] || 'btn-primary'
+    )
+  }
+
+  return 'btn-outline-secondary'
 }
-
-const { toPersianDate, getPersianMonthName } = usePersianDate()
 
 const formatOrderDate = (dateString) => {
   if (!dateString) return 'تاریخ نامعتبر'
 
-  const date = new Date(dateString)
-  const persianDate = toPersianDate(date)
-  const time = date.toLocaleTimeString('fa-IR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  try {
+    const date = new Date(dateString)
+    const persianDate = toPersianDate(date)
+    const time = date.toLocaleTimeString('fa-IR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
 
-  return `${persianDate} - ${time}`
+    return `${persianDate} - ${time}`
+  } catch (error) {
+    console.error('Error formatting date:', error)
+    return 'تاریخ نامعتبر'
+  }
 }
 
-// یا فرمت کامل‌تر
-const formatOrderDateDetailed = (dateString) => {
-  if (!dateString) return 'تاریخ نامعتبر'
+const updateStatus = async (newStatus) => {
+  try {
+    const confirmResult = await showConfirm(
+      `آیا از تغییر وضعیت سفارش به "${getStatusPersian(newStatus)}" اطمینان دارید؟`
+    )
 
-  const date = new Date(dateString)
-  const jalaaliDate = toPersianDate(date)
-  const time = date.toLocaleTimeString('fa-IR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+    if (!confirmResult.isConfirmed) {
+      return
+    }
 
-  return `تاریخ: ${jalaaliDate} | ساعت: ${time}`
+    isLoading.value = true
+
+    await orderService.updateOrder(props.order.orderHeaderId, {
+      orderHeaderId: props.order.orderHeaderId,
+      status: newStatus,
+      pickUpName: props.order.pickUpName,
+      pickUpPhoneNumber: props.order.pickUpPhoneNumber,
+      pickUpEmail: props.order.pickUpEmail,
+    })
+
+    showSuccess('وضعیت سفارش با موفقیت به روز شد')
+    closeModal()
+    // اطلاع به کامپوننت والد
+    emit('status-updated', {
+      orderHeaderId: props.order.orderHeaderId,
+      newStatus: newStatus,
+    })
+  } catch (error) {
+    console.error('خطا در تغییر وضعیت', error)
+    showError('خطا در تغییر وضعیت سفارش')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const isStatusDisabled = (status) => {
+  const currentStatus = props.order.status
+
+  // اگر وضعیت فعلی لغو شده یا تکمیل شده باشد، همه دکمه‌ها غیرفعال
+  if (currentStatus === ORDER_STATUS_CANCELLED || currentStatus === ORDER_STATUS_COMPLETED) {
+    return true
+  }
+
+  // اگر وضعیت درخواستی همان وضعیت فعلی باشد، غیرفعال شود
+  if (currentStatus === status) {
+    return true
+  }
+
+  // برای وضعیت لغو: همیشه فعال باشد (به جز وقتی که تکمیل شده)
+  if (status === ORDER_STATUS_CANCELLED) {
+    return false
+  }
+
+  // منطق flow مرحله‌ای - فقط مرحله بعدی فعال باشد
+  const statusFlowMap = {
+    [ORDER_STATUS_CONFIRMED]: [ORDER_STATUS_READY_FOR_PICKUP], // از تایید شده فقط به آماده تحویل
+    [ORDER_STATUS_READY_FOR_PICKUP]: [ORDER_STATUS_COMPLETED], // از آماده تحویل فقط به تکمیل شده
+    [ORDER_STATUS_COMPLETED]: [], // از تکمیل شده به هیچ‌جا
+  }
+
+  // اگر وضعیت فعلی در map نباشد، غیرفعال
+  if (!statusFlowMap[currentStatus]) {
+    return true
+  }
+
+  // فقط اگر وضعیت هدف در لیست وضعیت‌های مجاز باشد، فعال
+  return !statusFlowMap[currentStatus].includes(status)
 }
 </script>
 
@@ -243,5 +365,32 @@ const formatOrderDateDetailed = (dateString) => {
 * {
   font-family: Yekan;
   direction: rtl;
+}
+
+.modal-body-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: #dee2e6 #f8f9fa;
+}
+
+.modal-body-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body-scrollable::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+.modal-body-scrollable::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 3px;
+}
+
+.modal-body-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+.min-width-0 {
+  min-width: 0;
 }
 </style>

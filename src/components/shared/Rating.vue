@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center">
-    <small class="text-secondary ms-2">رتبه بندی این آیتم:</small>
+    <small class="text-secondary ms-2" v-if="!readonly">رتبه بندی این آیتم:</small>
     <div class="d-flex">
       <div
         v-for="star in 5"

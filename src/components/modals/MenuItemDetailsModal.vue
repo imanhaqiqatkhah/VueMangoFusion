@@ -54,6 +54,9 @@
                   </div>
                   <h4 class="fw-bold mb-0 fe-5 fe-sm-4">{{ menuItem.name }}</h4>
                 </div>
+                <div class="">
+                  <Rating :rating="menuItem.rating" :item-id="menuItem.id" :readonly="true" />
+                </div>
                 <!-- Category -->
                 <div>
                   <div class="text-secondary small mb-1">
@@ -68,7 +71,7 @@
                 <!-- Special Tag -->
                 <div v-if="menuItem.specialTag">
                   <div class="text-secondary small mb-1">
-                    <i class="bi bi-star ms-1"></i>تگ یا هشتگ اجتماعی
+                    <i class="bi bi-star ms-1"></i>تگ اجتماعی
                   </div>
                   <div
                     class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
@@ -103,6 +106,7 @@
 </template>
 
 <script setup>
+import Rating from '../shared/Rating.vue'
 import { CONFIG_IMAGE_URL } from '@/constants/config'
 
 const props = defineProps({

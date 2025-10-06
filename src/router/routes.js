@@ -12,11 +12,11 @@ import OrderManagement from '@/views/order/OrderManagement.vue'
 
 import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { requireAdmin, requireAuth } from './guards'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',

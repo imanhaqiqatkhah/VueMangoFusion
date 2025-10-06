@@ -12,33 +12,16 @@ import OrderManagement from '@/views/order/OrderManagement.vue'
 
 import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
 
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router' // ✅ تغییر مهم
 import { requireAdmin, requireAuth } from './guards'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL), // ✅ از hash mode استفاده کن
   routes: [
-    {
-      path: '/',
-      name: APP_ROUTE_NAMES.HOME,
-      component: Home,
-    },
-    {
-      path: '/no-access',
-      name: APP_ROUTE_NAMES.ACCESS_DENIED,
-      component: NoAccess,
-    },
-
-    {
-      path: '/sign-in',
-      name: APP_ROUTE_NAMES.SIGN_IN,
-      component: SignIn,
-    },
-    {
-      path: '/sign-up',
-      name: APP_ROUTE_NAMES.SIGN_UP,
-      component: SignUp,
-    },
+    { path: '/', name: APP_ROUTE_NAMES.HOME, component: Home },
+    { path: '/no-access', name: APP_ROUTE_NAMES.ACCESS_DENIED, component: NoAccess },
+    { path: '/sign-in', name: APP_ROUTE_NAMES.SIGN_IN, component: SignIn },
+    { path: '/sign-up', name: APP_ROUTE_NAMES.SIGN_UP, component: SignUp },
     {
       path: '/cart',
       name: APP_ROUTE_NAMES.CART,
@@ -83,12 +66,7 @@ const router = createRouter({
       component: OrderManagement,
       beforeEnter: [requireAdmin],
     },
-
-    {
-      path: '/:catchAll(.*)',
-      name: APP_ROUTE_NAMES.NOT_FOUND,
-      component: NotFound,
-    },
+    { path: '/:catchAll(.*)', name: APP_ROUTE_NAMES.NOT_FOUND, component: NotFound },
   ],
 })
 

@@ -1,12 +1,12 @@
 <template>
-  <nav class="navbar navbar-expand-md rounded-3 mx-auto my-2 w-100 bg-primary">
+  <nav class="navbar navbar-expand-md rounded-3 mx-auto my-2 w-100 bg-warning">
     <div class="container-fluid">
       <router-link class="navbar-brand" :to="{ name: APP_ROUTE_NAMES.HOME }">
         <img
           src="@/assets/logo.png"
           alt="logo"
           width="160"
-          height="30"
+          height="60"
           class="d-inline-block align-text-top ms-2"
         />
       </router-link>
@@ -24,16 +24,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link
-              class="nav-link text-light"
-              aria-current="page"
-              :to="{ name: APP_ROUTE_NAMES.HOME }"
+            <router-link class="nav-link" aria-current="page" :to="{ name: APP_ROUTE_NAMES.HOME }"
               >خانه</router-link
             >
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
             <router-link
-              class="nav-link text-light"
+              class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.ORDER_LIST }"
               >سفارشات
@@ -41,7 +38,7 @@
           </li>
           <li class="nav-item dropdown" v-if="authStore.isAdmin">
             <a
-              class="nav-link dropdown-toggle text-light"
+              class="nav-link dropdown-toggle"
               href="#"
               role="button"
               data-bs-toggle="dropdown"
@@ -68,11 +65,19 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              aria-current="page"
+              :to="{ name: APP_ROUTE_NAMES.COMING_SOON }"
+              >به زودی</router-link
+            >
+          </li>
         </ul>
         <ul class="navbar-nav me-auto small">
           <li class="nav-item">
             <router-link
-              class="nav-link text-light position-relative"
+              class="nav-link position-relative"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.CART }"
               ><i class="bi bi-cart3"></i>
@@ -84,7 +89,7 @@
           </li>
           <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
-              class="nav-link text-light"
+              class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.SIGN_IN }"
               >ورود
@@ -92,21 +97,20 @@
           </li>
           <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
-              class="nav-link text-light"
+              class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.SIGN_UP }"
               >ثبت نام
             </router-link>
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
-            <button class="nav-link text-light px-2" aria-current="page" @click="handleSignOut">
-              خروج
-            </button>
+            <button class="nav-link px-2" aria-current="page" @click="handleSignOut">خروج</button>
           </li>
 
+          <!-- 
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle text-light"
+              class="nav-link dropdown-toggle"
               href="#"
               role="button"
               data-bs-toggle="dropdown"
@@ -114,7 +118,7 @@
             >
               <i class="bi bi-laptop"></i>
             </a>
-            <ul class="dropdown-menu text-center">
+             <ul class="dropdown-menu text-center">
               <li>
                 <button
                   class="dropdown-item"
@@ -133,8 +137,9 @@
                   <i class="bi bi-moon-fill"></i> تاریک
                 </button>
               </li>
-            </ul>
+            </ul> 
           </li>
+          -->
         </ul>
       </div>
     </div>
@@ -143,13 +148,13 @@
 
 <script setup>
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
-import { useThemeStore } from '@/stores/storeTheme'
+// import { useThemeStore } from '@/stores/storeTheme'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useSwal } from '@/composables/swal'
 const cartStore = useCartStore()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
+// const themeStore = useThemeStore()
 const { showConfirm, showSuccess } = useSwal()
 
 const handleSignOut = async () => {

@@ -14,6 +14,7 @@ import { APP_ROUTE_NAMES } from '@/constants/routeNames.js'
 
 import { createRouter, createWebHashHistory } from 'vue-router' // ✅ تغییر مهم
 import { requireAdmin, requireAuth } from './guards'
+import ComingSoon from '@/components/layout/ComingSoon.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL), // ✅ از hash mode استفاده کن
@@ -22,6 +23,7 @@ const router = createRouter({
     { path: '/no-access', name: APP_ROUTE_NAMES.ACCESS_DENIED, component: NoAccess },
     { path: '/sign-in', name: APP_ROUTE_NAMES.SIGN_IN, component: SignIn },
     { path: '/sign-up', name: APP_ROUTE_NAMES.SIGN_UP, component: SignUp },
+    { path: '/coming-soon', name: APP_ROUTE_NAMES.COMING_SOON, component: ComingSoon },
     {
       path: '/cart',
       name: APP_ROUTE_NAMES.CART,

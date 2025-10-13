@@ -20,10 +20,10 @@ app.use(pinia)
 
 app.use(router)
 
-const themeStore = useThemeStore()
-if (themeStore.theme) {
-  document.body.setAttribute('data-bs-theme', themeStore.theme)
-}
+// const themeStore = useThemeStore()
+// if (themeStore.theme) {
+//   document.body.setAttribute('data-bs-theme', themeStore.theme)
+// }
 
 const authStore = useAuthStore()
 authStore.initialize()

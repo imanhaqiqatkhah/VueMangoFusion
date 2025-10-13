@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="footer text-center mx-auto mt-4 p-3 bg-opacity-10 text-primary bg-primary rounded-3"
+      class="footer text-center mx-auto mt-4 p-3 bg-opacity-10 text-warning bg-warning rounded-3"
     >
       &copy; Powered by imanHaqiqatKhah &target;
     </div>

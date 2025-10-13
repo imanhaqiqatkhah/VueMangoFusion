@@ -12,11 +12,11 @@
           class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center p-3"
         >
           <div>
-            <h2 class="h5 text-primary">منوی آیتم ها</h2>
+            <h2 class="h5 text-dark">منوی آیتم ها</h2>
             <p class="mb-0 text-muted small">مدیریت سایت</p>
           </div>
           <button
-            class="btn btn-primary btn-sm gap-2 rounded-1 px-4 py-2"
+            class="btn btn-warning btn-sm gap-2 rounded-1 px-4 py-2"
             @click="router.push({ name: APP_ROUTE_NAMES.CREATE_MENU_ITEM })"
           >
             <i class="bi bi-plus-square"></i> &nbsp;
@@ -51,7 +51,7 @@
                     </div>
                   </td>
                   <td>
-                    <span class="badge bg-primary bg-opacity-10 text-primary small">
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary small">
                       {{ menuItem.category }}
                     </span>
                   </td>
@@ -64,7 +64,7 @@
                   <td class="ps-3 text-end">
                     <div class="d-flex gap-2 justify-content-end">
                       <button
-                        class="btn btn-sm btn-outline-primary"
+                        class="btn btn-sm btn-outline-secondary"
                         @click="
                           router.push({
                             name: APP_ROUTE_NAMES.EDIT_MENU_ITEM,

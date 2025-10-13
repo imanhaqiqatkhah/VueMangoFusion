@@ -29,9 +29,7 @@
     </div>
     <div class="container px-0 mx-0">
       <!-- Filters Section -->
-      <div
-        class="row g-3 my-4 border align-items-center shadow-sm rounded-4 mx-1 pt-1 p-3 bg-white"
-      >
+      <div class="row g-3 my-4 align-items-center rounded-4 mx-1 pt-1 p-3 bg-white">
         <!-- Categories -->
         <div class="col-lg-12 mb-3">
           <div class="d-flex flex-wrap gap-3 justify-content-center">
@@ -76,7 +74,7 @@
           <div class="d-flex justify-content-center">
             <div class="dropdown sort-dropdown">
               <button
-                class="btn btn-outline-primary rounded-pill px-4 py-2 dropdown-toggle d-flex align-items-center gap-3 transition-all hover-lift"
+                class="btn btn-outline-dark rounded-pill px-4 py-2 dropdown-toggle d-flex align-items-center gap-3 transition-all hover-lift"
                 type="button"
                 data-bs-toggle="dropdown"
               >
@@ -104,7 +102,7 @@
                       <div class="fw-medium">{{ sort }}</div>
                     </div>
                     <div class="selection-indicator">
-                      <i v-if="sort === selectedSortOption" class="bi bi-check-lg text-primary"></i>
+                      <i v-if="sort === selectedSortOption" class="bi bi-check-lg text-warning"></i>
                     </div>
                   </button>
                 </li>
@@ -295,11 +293,11 @@ const sparkleStyle = (index) => {
 }
 
 .category-active {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  background: linear-gradient(135deg, #fdd90dff 0%, #caa00aff 100%);
   color: white;
-  border-color: #0d6efd;
+  border-color: #000000ff;
   transform: scale(1.05);
-  box-shadow: 0 10px 40px rgba(13, 110, 253, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px rgba(253, 189, 13, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   animation: categoryPulse 2s infinite;
 }
 
@@ -312,7 +310,7 @@ const sparkleStyle = (index) => {
 .category-inactive:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #0d6efd;
+  border-color: #fdbd0dff;
 }
 
 /* Category Background Animation */
@@ -385,14 +383,14 @@ const sparkleStyle = (index) => {
 
 .sort-dropdown .btn {
   background: white;
-  border: 2px solid #0d6efd;
+  border: 2px solid #fdcd0dff;
   min-width: 200px;
 }
 
 .sort-icon-wrapper {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  background: linear-gradient(135deg, #fdd50dff 0%, #ca940aff 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -426,7 +424,7 @@ const sparkleStyle = (index) => {
 }
 
 .menu-item-hover:hover {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  background: linear-gradient(135deg, #fddd0dff 0%, #ca900aff 100%);
   color: white;
   transform: translateX(5px);
 }
@@ -451,7 +449,8 @@ const sparkleStyle = (index) => {
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+  box-shadow: 0 8px 25px rgba(253, 185, 13, 0.3);
+  color: black;
 }
 
 /* Cursor */

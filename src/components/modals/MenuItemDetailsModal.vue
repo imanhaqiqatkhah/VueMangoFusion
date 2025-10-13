@@ -38,7 +38,7 @@
                 />
                 <div class="position-absolute top-0 start-0 m-2 m-sm-3">
                   <span
-                    class="badge bg-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 d-flex align-items-center gap-1 fe-6 fe-sm-5"
+                    class="badge bg-warning text-dark rounded-pill px-2 px-sm-3 py-1 py-sm-2 d-flex align-items-center gap-1 fe-6 fe-sm-5"
                     >{{ (menuItem.price / 10).toFixed(3) }} تومان
                   </span>
                 </div>
@@ -127,13 +127,13 @@ const handleClose = () => {
 }
 @media (max-width: 576px) {
   .modal-size {
-    width: 95%;
-    height: 95%;
+    width: 85%;
+    height: 85%;
   }
 }
 @media (min-width: 577px) {
   .modal-size {
-    width: 60%;
+    width: 50%;
     height: 65%;
   }
 }

@@ -1,12 +1,12 @@
 <template>
   <nav class="navbar navbar-expand-md rounded-3 mx-auto my-2 w-100 bg-warning">
     <div class="container-fluid">
-      <router-link class="navbar-brand" :to="{ name: APP_ROUTE_NAMES.HOME }">
+      <router-link class="navbar-brand" :to="{ name: APP_ROUTE_NAMES.HOME }" @click="closeNavbar">
         <img
           src="@/assets/logo.png"
           alt="logo"
-          width="160"
-          height="60"
+          width="130"
+          height="40"
           class="d-inline-block align-text-top ms-2"
         />
       </router-link>
@@ -18,13 +18,18 @@
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
         aria-label="Toggle navigation"
+        ref="toggler"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" ref="navbar">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="nav-link" aria-current="page" :to="{ name: APP_ROUTE_NAMES.HOME }"
+            <router-link
+              class="nav-link"
+              aria-current="page"
+              :to="{ name: APP_ROUTE_NAMES.HOME }"
+              @click="closeNavbar"
               >خانه</router-link
             >
           </li>
@@ -33,8 +38,9 @@
               class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.ORDER_LIST }"
-              >سفارشات
-            </router-link>
+              @click="closeNavbar"
+              >سفارشات</router-link
+            >
           </li>
           <li class="nav-item dropdown" v-if="authStore.isAdmin">
             <a
@@ -52,6 +58,7 @@
                   class="dropdown-item"
                   aria-current="page"
                   :to="{ name: APP_ROUTE_NAMES.MENU_ITEM_LIST }"
+                  @click="closeNavbar"
                   >آیتم های منو</router-link
                 >
               </li>
@@ -60,6 +67,7 @@
                   class="dropdown-item"
                   aria-current="page"
                   :to="{ name: APP_ROUTE_NAMES.MANAGE_ORDER_ADMIN }"
+                  @click="closeNavbar"
                   >مدیریت سفارشات</router-link
                 >
               </li>
@@ -70,6 +78,7 @@
               class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.COMING_SOON }"
+              @click="closeNavbar"
               >به زودی</router-link
             >
           </li>
@@ -80,11 +89,14 @@
               class="nav-link position-relative"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.CART }"
-              ><i class="bi bi-cart3"></i>
+              @click="closeNavbar"
+            >
+              <i class="bi bi-cart3"></i>
               <span
                 class="position-absolute start-100 translate-middle badge rounded-pill bg-danger"
-                >{{ cartStore.cartCount }}</span
               >
+                {{ cartStore.cartCount }}
+              </span>
             </router-link>
           </li>
           <li class="nav-item" v-if="!authStore.isAuthenticated">
@@ -92,54 +104,22 @@
               class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.SIGN_IN }"
-              >ورود
-            </router-link>
+              @click="closeNavbar"
+              >ورود</router-link
+            >
           </li>
           <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link"
               aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.SIGN_UP }"
-              >ثبت نام
-            </router-link>
+              @click="closeNavbar"
+              >ثبت نام</router-link
+            >
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
             <button class="nav-link px-2" aria-current="page" @click="handleSignOut">خروج</button>
           </li>
-
-          <!-- 
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-laptop"></i>
-            </a>
-             <ul class="dropdown-menu text-center">
-              <li>
-                <button
-                  class="dropdown-item"
-                  aria-current="page"
-                  @click="themeStore.setTheme('light')"
-                >
-                  <i class="bi bi-sun"></i> روشن
-                </button>
-              </li>
-              <li>
-                <button
-                  class="dropdown-item"
-                  aria-current="page"
-                  @click="themeStore.setTheme('dark')"
-                >
-                  <i class="bi bi-moon-fill"></i> تاریک
-                </button>
-              </li>
-            </ul> 
-          </li>
-          -->
         </ul>
       </div>
     </div>
@@ -147,25 +127,41 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
-// import { useThemeStore } from '@/stores/storeTheme'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useSwal } from '@/composables/swal'
+
 const cartStore = useCartStore()
 const authStore = useAuthStore()
-// const themeStore = useThemeStore()
 const { showConfirm, showSuccess } = useSwal()
+
+const toggler = ref(null)
+const navbar = ref(null)
+
+const closeNavbar = () => {
+  // Simple method - check if navbar is open on mobile and close it
+  const navbar = document.getElementById('navbarSupportedContent')
+  const toggler = document.querySelector('.navbar-toggler')
+
+  if (navbar && toggler && window.innerWidth < 768) {
+    // Check if navbar is currently open
+    if (navbar.classList.contains('show')) {
+      // Close navbar by triggering click on toggler
+      toggler.click()
+    }
+  }
+}
 
 const handleSignOut = async () => {
   try {
     const confirmResult = await showConfirm('آیا از خروج اطمینان دارید؟')
 
     if (confirmResult.isConfirmed) {
+      closeNavbar()
       await authStore.signOut()
       showSuccess('با موفقیت خارج شدید')
-      // اگر نیاز به ریدایرکت دارید:
-      // router.push({ name: APP_ROUTE_NAMES.HOME })
     }
   } catch (error) {
     console.log('Error in sign out:', error)

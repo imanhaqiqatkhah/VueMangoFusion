@@ -57,24 +57,6 @@
             <router-link
               class="nav-link"
               aria-current="page"
-              :to="{ name: APP_ROUTE_NAMES.SHOP }"
-              @click="closeNavbar"
-              >فروشگاه</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link
-              class="nav-link"
-              aria-current="page"
-              :to="{ name: APP_ROUTE_NAMES.ABOUT }"
-              @click="closeNavbar"
-              >درباره ما</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link
-              class="nav-link"
-              aria-current="page"
               :to="{ name: APP_ROUTE_NAMES.CONTACT }"
               @click="closeNavbar"
               >تماس با ما</router-link

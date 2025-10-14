@@ -41,18 +41,6 @@
                     خانه
                   </router-link>
                 </li>
-                <li class="mb-2">
-                  <router-link :to="{ name: APP_ROUTE_NAMES.SHOP }" class="footer-link">
-                    <i class="bi bi-chevron-left me-2"></i>
-                    فروشگاه
-                  </router-link>
-                </li>
-                <li class="mb-2">
-                  <router-link :to="{ name: APP_ROUTE_NAMES.ABOUT }" class="footer-link">
-                    <i class="bi bi-chevron-left me-2"></i>
-                    درباره ما
-                  </router-link>
-                </li>
                 <li>
                   <router-link :to="{ name: APP_ROUTE_NAMES.CONTACT }" class="footer-link">
                     <i class="bi bi-chevron-left me-2"></i>

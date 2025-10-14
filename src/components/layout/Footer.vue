@@ -71,7 +71,6 @@
                 <h5>شبکه های اجتماعی</h5>
               </div>
               <div class="social-section">
-                <p class="text-muted mb-3">ما را در شبکه های اجتماعی دنبال کنید</p>
                 <div class="social-grid">
                   <a
                     href="https://instagram.com/mobile_mohades2"

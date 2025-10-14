@@ -10,6 +10,25 @@
           class="d-inline-block align-text-top ms-2"
         />
       </router-link>
+
+      <!-- سبد خرید برای موبایل - بالای دکمه منو -->
+      <div class="d-md-none me-auto ms-3">
+        <router-link
+          class="nav-link position-relative p-0"
+          aria-current="page"
+          :to="{ name: APP_ROUTE_NAMES.CART }"
+          @click="closeNavbar"
+        >
+          <i class="bi bi-cart3 fs-5"></i>
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size: 0.6rem"
+          >
+            {{ cartStore.cartCount }}
+          </span>
+        </router-link>
+      </div>
+
       <button
         class="navbar-toggler"
         type="button"
@@ -22,6 +41,7 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent" ref="navbar">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
@@ -31,6 +51,24 @@
               :to="{ name: APP_ROUTE_NAMES.HOME }"
               @click="closeNavbar"
               >خانه</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              aria-current="page"
+              :to="{ name: APP_ROUTE_NAMES.ABOUT }"
+              @click="closeNavbar"
+              >درباره ما</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              aria-current="page"
+              :to="{ name: APP_ROUTE_NAMES.CONTACT }"
+              @click="closeNavbar"
+              >تماس با ما</router-link
             >
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated">
@@ -73,18 +111,10 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <router-link
-              class="nav-link"
-              aria-current="page"
-              :to="{ name: APP_ROUTE_NAMES.COMING_SOON }"
-              @click="closeNavbar"
-              >به زودی</router-link
-            >
-          </li>
         </ul>
         <ul class="navbar-nav me-auto small">
-          <li class="nav-item">
+          <!-- سبد خرید برای دسکتاپ - مخفی در موبایل -->
+          <li class="nav-item d-none d-md-block">
             <router-link
               class="nav-link position-relative"
               aria-current="page"

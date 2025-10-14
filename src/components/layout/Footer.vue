@@ -20,7 +20,7 @@
                   <i class="bi bi-telephone me-2"></i>
                   09044110410
                 </p>
-                <p class="mb-0">
+                <p class="mb-0" style="font-family: sans-serif">
                   <i class="bi bi-envelope me-2"></i>
                   info@mobilemohades2.ir
                 </p>

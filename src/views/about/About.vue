@@ -93,7 +93,7 @@
         </div>
       </div>
       <!-- Call to Action -->
-      <div class="row mt-1 text-center">
+      <!-- <div class="row mt-1 text-center">
         <div class="col-12">
           <div class="card bg-warning border-0 shadow">
             <div class="card-body py-3">
@@ -101,7 +101,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>

@@ -13,4 +13,5 @@ export const APP_ROUTE_NAMES = Object.freeze({
   ORDER_CONFIRM: 'order-confirmed',
   ABOUT: 'about',
   CONTACT: 'contact',
+  SHOP: 'shop',
 })

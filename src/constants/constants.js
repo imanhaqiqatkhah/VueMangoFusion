@@ -6,6 +6,9 @@ export const CATEGORIES = [
   'هندزفری',
   'میکروفن',
   'شارژر',
+  'گلس',
+  'کاور',
+  'سایر',
 ]
 
 export const SORT_PRICE_LOW_HIGH = 'قیمت از پایین به بالا'

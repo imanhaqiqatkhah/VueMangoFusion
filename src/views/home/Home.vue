@@ -32,7 +32,7 @@
       <div class="row g-3 my-4 align-items-center rounded-4 mx-1 pt-1 p-3 bg-white">
         <!-- Categories -->
         <div class="col-lg-12 mb-3">
-          <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <div class="d-flex flex-wrap gap-2 justify-content-center">
             <div
               :class="{
                 'category-active': category === selectedCategory,
@@ -244,6 +244,9 @@ const getCategoryIcon = (category) => {
     هندزفری: 'bi bi-headphones',
     میکروفن: 'bi bi-mic-fill',
     شارژر: 'bi bi-lightning-charge',
+    گلس: 'bi bi-shield-check',
+    کاور: 'bi bi-phone-fill',
+    سایر: 'bi bi-three-dots',
   }
   return icons[category] || 'bi bi-circle'
 }

@@ -3,7 +3,7 @@
     <div class="card-header border-bottom-0 pt-4">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-          <i class="bi bi-receipt-cutoff text-primary ps-2" style="font-size: 2rem"></i>
+          <i class="bi bi-receipt-cutoff text-dark ps-2" style="font-size: 2rem"></i>
           <h5 class="card-title mb-0"># سفارش {{ order.orderHeaderId }}</h5>
         </div>
         <span :class="getStatusBadgeClass(order.status)" class="badge rounded-pill">
@@ -14,27 +14,27 @@
     <div class="card-body">
       <div class="mb-4">
         <div class="d-flex align-items-center mb-3">
-          <i class="bi bi-person-square text-primary ps-2" style="font-size: 1.5rem"></i>
+          <i class="bi bi-person-square text-dark ps-2" style="font-size: 1.5rem"></i>
           <div>
             <h6 class="mb-0">{{ order.pickUpName }}</h6>
             <small class="text-body-secondary">{{ order.pickUpPhoneNumber }}</small>
           </div>
         </div>
         <div class="d-flex align-items-center mb-2">
-          <i class="bi bi-envelope text-primary ps-2"></i><span>{{ order.pickUpEmail }}</span>
+          <i class="bi bi-envelope text-dark ps-2"></i><span>{{ order.pickUpEmail }}</span>
         </div>
         <div class="d-flex align-items-center mb-2">
-          <i class="bi bi-bag text-primary ps-2"> </i> <span> {{ order.totalItem }}</span>
+          <i class="bi bi-bag text-dark ps-2"> </i> <span> {{ order.totalItem }}</span>
         </div>
         <div class="d-flex align-items-center">
-          <i class="bi bi-cash-coin text-primary ps-2"></i>
+          <i class="bi bi-cash-coin text-dark ps-2"></i>
           <span class="fw-bold">{{ (order.orderTotal / 10).toFixed(3) }} تومان</span>
         </div>
       </div>
 
       <div class="bg-body-tertiary rounded-3 p-3">
         <div class="d-flex align-items-center mb-3 border-bottom pb-2">
-          <i class="bi bi-card-list text-primary ps-2"></i>
+          <i class="bi bi-card-list text-dark ps-2"></i>
           <h6 class="mb-0">آیتم سفارش</h6>
         </div>
         <div
@@ -47,7 +47,9 @@
               <span class="text-truncate ms-3">{{ item.menuItem.name }}</span>
             </div>
             <div class="d-flex align-items-center">
-              <span class="badge bg-primary-subtle text-primary ms-2">{{ item.quantity }} *</span>
+              <span class="badge bg-secondary-subtle text-secondary ms-2"
+                >{{ item.quantity }} *</span
+              >
               <span class="text-body-secondary">{{ (item.price / 10).toFixed(3) }} تومان</span>
             </div>
           </div>
@@ -71,7 +73,7 @@ const getStatusBadgeClass = (status) => {
   const statusClasses = {
     Confirmed: 'bg-warning-subtle text-warning-emphasis',
     'Ready for Pickup': 'bg-info-subtle text-info-emphasis',
-    Completed: 'bg-primary-subtle text-primary-emphasis',
+    Completed: 'bg-primary-subtle text-warning-emphasis',
     Cancelled: 'bg-danger text-danger-emphasis',
   }
   return statusClasses[status] || 'bg-secondary'

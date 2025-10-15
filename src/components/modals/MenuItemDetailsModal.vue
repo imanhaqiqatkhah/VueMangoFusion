@@ -13,7 +13,7 @@
       >
         <!-- Header -->
         <div
-          class="position-relative modal-header w-100 d-flex justify-content-between border-0 bg-primary bg-opacity-10 px-3 px-sm-4 py-3 rounded-top-0 rounded-md-top-4 sticky-top"
+          class="position-relative modal-header w-100 d-flex justify-content-between border-0 bg-warning bg-opacity-10 px-3 px-sm-4 py-3 rounded-top-0 rounded-md-top-4 sticky-top"
         >
           <h5 class="modal-title d-flex align-items-center gap-2 mb-0 fe-5 fe-sm-4">
             <i class="bi bi-card-heading"></i><span>منوی مشخصات</span>
@@ -63,7 +63,7 @@
                     <i class="bi bi-tag ms-1"></i>دسته بندی
                   </div>
                   <div
-                    class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
+                    class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 px-sm-3 py-1 py-sm-2 fe-6 fe-sm-6"
                   >
                     {{ menuItem.category }}
                   </div>

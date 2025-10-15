@@ -1,18 +1,18 @@
 <template>
   <div class="d-flex justify-content-center align-items-center" v-if="loading">
-    <div class="spinner-grow text-primary" style="width: 2.5rem; height: 2.5rem" role="status">
+    <div class="spinner-grow text-warning" style="width: 2.5rem; height: 2.5rem" role="status">
       <span class="visually-hidden">در حال بارگیری...</span>
     </div>
   </div>
   <div class="container" v-else>
     <div class="mx-auto">
       <div class="mb-4 border-bottom d-flex justify-content-between align-items-center py-3">
-        <h3 class="fw-semibold text-primary">افزودن منو</h3>
+        <h3 class="fw-semibold text-warning">افزودن منو</h3>
         <div class="d-flex gap-3">
           <button
             type="submit"
             form="menuForm"
-            class="btn btn-primary btn-sm gap-2 rounded-1 px-4 py-2"
+            class="btn btn-warning btn-sm gap-2 rounded-1 px-4 py-2"
             :disabled="isProcessing"
           >
             <span v-if="isProcessing" class="spinner-border spinner-border-sm ms-2"></span>

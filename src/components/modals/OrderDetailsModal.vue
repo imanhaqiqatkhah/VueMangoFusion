@@ -14,8 +14,8 @@
             class="d-flex flex-column flex-sm-row justify-content-between align-items-end align-items-sm-center gap-3 mb-2"
           >
             <div class="d-flex align-items-center">
-              <i class="bi bi-receipt-cutoff ps-1 text-primary"></i>
-              <h5 class="mb-0 fe-5 text-primary"># سفارش {{ order.orderHeaderId }}</h5>
+              <i class="bi bi-receipt-cutoff ps-1 text-dark"></i>
+              <h5 class="mb-0 fe-5 text-dark"># سفارش {{ order.orderHeaderId }}</h5>
             </div>
             <button
               @click="closeModal"
@@ -27,7 +27,7 @@
             class="d-flex flex-column flex-sm-row justify-content-between align-items-end align-items-sm-center gap-2"
           >
             <div class="d-flex align-items-center">
-              <i class="bi bi-calendar ps-1 text-primary"></i>
+              <i class="bi bi-calendar ps-1 text-secondary"></i>
               <span class="text-body-secondary small me-2">تاریخ ثبت: </span>
               <span class="fw-medium"> {{ formatOrderDate(order.orderDate) }} </span>
             </div>
@@ -66,7 +66,7 @@
               <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                   <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-currency-dollar text-primary ms-2"></i>
+                    <i class="bi bi-currency-dollar text-secondary ms-2"></i>
                     <h6 class="card-title mb-0">اطلاعات مالی</h6>
                   </div>
                   <div class="d-flex flex-column gap-2">
@@ -76,7 +76,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="text-body-secondary small">جمع کل</span>
-                      <span class="fw-bold text-primary"
+                      <span class="fw-bold text-dark"
                         >{{ (order.orderTotal / 10).toFixed(3) }} تومان</span
                       >
                     </div>
@@ -89,7 +89,7 @@
           <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-3">
               <div class="d-flex align-items-center mb-3">
-                <i class="bi bi-list-check text-primary ms-2"></i>
+                <i class="bi bi-list-check text-dark ms-2"></i>
                 <h6 class="card-title mb-0">آیتم های سفارش</h6>
               </div>
               <div class="table-responsive">
@@ -106,8 +106,8 @@
                       }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                      <span class="badge bg-primary-subtle text-primary">{{ item.quantity }} </span
-                      >*<span class="text-body-secondary small"
+                      <span class="badge bg-info-subtle text-info">{{ item.quantity }} </span>*<span
+                        class="text-body-secondary small"
                         >{{ (item.price / 10).toFixed(3) }} تومان</span
                       >
                     </div>
@@ -124,7 +124,7 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body p-3">
               <div class="d-flex align-items-center mb-3">
-                <i class="bi bi-gear text-primary ms-2" width="20"></i>
+                <i class="bi bi-gear text-dark ms-2" width="20"></i>
                 <h6 class="card-title mb-0">وضعیت سفارش</h6>
               </div>
               <!-- Status Flow Button -->

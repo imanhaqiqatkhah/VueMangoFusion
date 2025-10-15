@@ -2,14 +2,14 @@
   <div class="container py-3">
     <div class="row">
       <div class="col-12">
-        <h2 class="mb-4 text-primary">سبد شما</h2>
+        <h2 class="mb-4 text-warning">سبد شما</h2>
         <div class="text-center py-4" v-if="cartStore.cartCount == 0">
           <div class="mb-4">
             <i class="bi bi-cart" style="font-size: 2rem"></i>
           </div>
           <h3 class="h5 mb-3">سبد شما خالی است</h3>
           <p class="h5 mb-3">انگار سبد شما خالی است، برای خرید زودتر اقدام کن</p>
-          <button class="btn btn-primary" @click="continueShopping">
+          <button class="btn btn-warning" @click="continueShopping">
             <i class="bi bi-arrow-right-square ms-1"></i>ادامه به خرید کردن
           </button>
         </div>
@@ -77,7 +77,7 @@
           <div class="row g-4">
             <div class="col-md-6">
               <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary" @click="continueShopping">
+                <button class="btn btn-outline-warning" @click="continueShopping">
                   <i class="bi bi-arrow-right-square mx-1"></i><span class="">ادامه خرید</span>
                 </button>
                 <button class="btn btn-outline-danger" @click="cartStore.clearCart()">
@@ -96,11 +96,11 @@
                   <hr />
                   <div class="d-flex justify-content-between mb-3">
                     <span class="fw-bold">قیمت کلی</span>
-                    <span class="fw-bold test-primary"
+                    <span class="fw-bold test-warning"
                       >{{ (cartStore.cartTotal / 10).toFixed(3) }} تومان</span
                     >
                   </div>
-                  <button class="btn btn-primary w-100" @click="checkout">
+                  <button class="btn btn-warning w-100" @click="checkout">
                     <i class="bi bi-cash-stack"></i>اقدام برای پرداخت
                   </button>
                   <div class="text-center mt-1">

@@ -30,7 +30,7 @@
     >
       <span class="visually-hidden">رتبه...</span>
     </div>
-    <div class="text-primary me-2" v-if="isRatingSuccessful">
+    <div class="text-warning me-2" v-if="isRatingSuccessful">
       <i class="bi bi-check-circle-fill"></i>
     </div>
   </div>

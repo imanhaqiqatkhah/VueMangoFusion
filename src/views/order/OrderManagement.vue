@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid py-2">
-    <p class="text-primary h2 pb-1">مدیریت سفارشات</p>
+    <p class="text-dark h2 pb-1">مدیریت سفارشات</p>
 
     <!-- Filters -->
     <div class="card border-0 shadow-sm p-4 mb-4">
@@ -64,7 +64,7 @@
 
     <div v-else>
       <div class="mb-3">
-        <span class="badge bg-primary">{{ filteredOrders.length }} سفارش موجود</span>
+        <span class="badge bg-dark">{{ filteredOrders.length }} سفارش موجود</span>
       </div>
 
       <div class="table-responsive card border-0 shadow-sm">
@@ -110,7 +110,7 @@
                 </span>
               </td>
               <td>
-                <button class="btn btn-sm btn-primary" @click="viewOrderDetails(order)">
+                <button class="btn btn-sm btn-warning" @click="viewOrderDetails(order)">
                   <i class="bi bi-card-checklist"></i>&nbsp; مشاهده جزئیات
                 </button>
               </td>
@@ -125,8 +125,7 @@
           <!-- First page button -->
           <li class="page-item">
             <a
-              class="page-link text-primary border-primary"
-              href="#"
+              class="page-link text-secondary border-secondary"
               aria-label="First"
               @click="changePage(1)"
             >
@@ -137,8 +136,7 @@
           <!-- Previous button -->
           <li class="page-item">
             <a
-              class="page-link text-primary border-primary"
-              href="#"
+              class="page-link text-secondary border-secondary"
               aria-label="Previous"
               @click="changePage(currentPage - 1)"
             >
@@ -150,17 +148,16 @@
           <!-- Page numbers with limited display -->
           <template v-for="pageNum in displayedPageNumber" :key="pageNum">
             <li class="page-item disabled" v-if="pageNum === '...'">
-              <span class="page-link border-primary">...</span>
+              <span class="page-link border-secondary">...</span>
             </li>
             <li class="page-item" v-else>
               <a
                 :class="
                   pageNum === currentPage
-                    ? 'bg-primary border-primary text-white'
-                    : 'text-primary border-primary'
+                    ? 'bg-secondary border-secondary text-white'
+                    : 'text-secondary border-secondary'
                 "
-                class="page-link border-primary"
-                href="#"
+                class="page-link border-secondary"
                 @click="changePage(pageNum)"
               >
                 {{ pageNum }}
@@ -170,9 +167,8 @@
           <!-- Next button -->
           <li class="page-item">
             <a
-              href="#"
               aria-label="Next"
-              class="page-link text-primary border-primary"
+              class="page-link text-secondary border-secondary"
               @click="changePage(currentPage + 1)"
             >
               <span aria-hidden="true">&rsaquo;</span>
@@ -183,8 +179,7 @@
           <!-- Last page button -->
           <li class="page-item">
             <a
-              href="#"
-              class="page-link text-primary border-primary"
+              class="page-link text-secondary border-secondary"
               aria-label="Last"
               @click="changePage(totalPages)"
             >

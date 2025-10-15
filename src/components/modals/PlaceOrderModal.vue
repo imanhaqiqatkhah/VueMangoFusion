@@ -68,7 +68,7 @@
           </button>
           <button
             tabindex="submit"
-            class="btn btn-primary px-4"
+            class="btn btn-warning px-4"
             :disabled="isSubmitting || !cartStore.cartItems || cartStore.cartItems.length === 0"
           >
             <span v-if="isSubmitting" class="d-flex align-items-center gap-2">

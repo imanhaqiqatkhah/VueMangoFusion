@@ -14,7 +14,7 @@
         <i class="bi bi-bag" style="font-size: 2.5rem"></i>
         <h3 class="mb-3">هنوز سفارشی نیست</h3>
         <p class="text-body-secondary mb-4">اینجا بهترین خدمات ارائه میشه ، برای خرید جستجو کنید</p>
-        <router-link :to="{ name: APP_ROUTE_NAMES.HOME }" class="btn btn-primary btn-lg">
+        <router-link :to="{ name: APP_ROUTE_NAMES.HOME }" class="btn btn-warning btn-lg">
           <i class="bi bi-menu-button-wide ms-2"></i>شروع به خرید</router-link
         >
       </div>

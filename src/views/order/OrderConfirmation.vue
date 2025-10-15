@@ -1,12 +1,12 @@
 <template>
   <div class="container py-5">
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-primary text-white">
+      <div class="card-header bg-warning text-white">
         <h4 class="mb-0">سفارش شما</h4>
       </div>
       <div class="card-body text-center">
         <div class="text-center my-2">
-          <div class="alert alert-primary d-inline-block px-5 py-3 fe-4" role="alert">
+          <div class="alert alert-warning d-inline-block px-5 py-3 fe-4" role="alert">
             <strong>متشکرم!</strong><br />
             سفارش شما ثبت شد.
           </div>
@@ -23,7 +23,7 @@
       <p class="px-3 text-center">سفارش شما در حال آماده سازی است، از خرید شما متشکریم</p>
     </div>
     <div class="text-center">
-      <a href="/" class="btn btn-primary px-4">برگشت به صفحه اصلی</a>
+      <a href="/" class="btn btn-warning px-4">برگشت به صفحه اصلی</a>
     </div>
   </div>
 </template>

@@ -120,8 +120,8 @@
       <div v-else>
         <div class="row">
           <MenuItemCard
-            v-if="filteredItems.length && filteredItems.length > 0"
-            v-for="(item, index) in filteredItems"
+            v-if="paginatedItems.length && paginatedItems.length > 0"
+            v-for="(item, index) in paginatedItems"
             :key="item.id"
             class="list-item col-12 col-md-6 col-lg-4 pb-4"
             :menuItem="item"
@@ -136,6 +136,81 @@
             <p class="lead text-body-secondary">هیچ آیتمی یافت نشد</p>
           </div>
         </div>
+
+        <!-- Pagination -->
+        <nav
+          aria-label="Product pagination"
+          class="mt-4 d-flex justify-content-center"
+          v-if="totalPages > 1"
+        >
+          <ul class="pagination pagination-md">
+            <!-- First page button -->
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <a
+                class="page-link text-secondary border-secondary"
+                aria-label="First"
+                @click="changePage(1)"
+              >
+                <span aria-hidden="true">&laquo;</span>
+                <span class="visually-hidden">صفحه اول</span>
+              </a>
+            </li>
+            <!-- Previous button -->
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <a
+                class="page-link text-secondary border-secondary"
+                aria-label="Previous"
+                @click="changePage(currentPage - 1)"
+              >
+                <span aria-hidden="true">&lsaquo;</span>
+                <span class="visually-hidden">صفحه قبلی</span>
+              </a>
+            </li>
+
+            <!-- Page numbers with limited display -->
+            <template v-for="pageNum in displayedPageNumbers" :key="pageNum">
+              <li class="page-item disabled" v-if="pageNum === '...'">
+                <span class="page-link border-secondary">...</span>
+              </li>
+              <li class="page-item" v-else>
+                <a
+                  :class="
+                    pageNum === currentPage
+                      ? 'bg-secondary border-secondary text-white'
+                      : 'text-secondary border-secondary'
+                  "
+                  class="page-link border-secondary"
+                  @click="changePage(pageNum)"
+                >
+                  {{ pageNum }}
+                </a>
+              </li>
+            </template>
+            <!-- Next button -->
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+              <a
+                aria-label="Next"
+                class="page-link text-secondary border-secondary"
+                @click="changePage(currentPage + 1)"
+              >
+                <span aria-hidden="true">&rsaquo;</span>
+                <span class="visually-hidden">صفحه بعدی</span>
+              </a>
+            </li>
+
+            <!-- Last page button -->
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+              <a
+                class="page-link text-secondary border-secondary"
+                aria-label="Last"
+                @click="changePage(totalPages)"
+              >
+                <span aria-hidden="true">&raquo;</span>
+                <span class="visually-hidden">صفحه آخر</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
     <!-- Menu Detail Modal -->
@@ -163,6 +238,7 @@ import {
   SORT_NEWEST,
   SORT_OPTIONS,
 } from '@/constants/constants'
+
 const { showConfirm, showError, showSuccess } = useSwal()
 const menuItems = reactive([])
 const loading = ref(false)
@@ -175,6 +251,10 @@ const categoryList = reactive(['همه', ...CATEGORIES])
 const showModal = ref(false)
 const selectedMenuItem = ref(null)
 
+// Pagination variables
+const itemsPerPage = 8
+const currentPage = ref(1)
+
 const handleShowDetails = (menuItem) => {
   selectedMenuItem.value = menuItem
   showModal.value = true
@@ -186,9 +266,12 @@ const handleCloseDetailsModal = (menuItem) => {
 
 function updateSelectedCategory(category) {
   selectedCategory.value = category
+  currentPage.value = 1 // بازگشت به صفحه اول هنگام تغییر دسته‌بندی
 }
+
 function updateSelectedSortOption(sort) {
   selectedSortOption.value = sort
+  currentPage.value = 1 // بازگشت به صفحه اول هنگام تغییر مرتب‌سازی
 }
 
 const filteredItems = computed(() => {
@@ -217,6 +300,55 @@ const filteredItems = computed(() => {
   return tempArray
 })
 
+// Pagination computed properties
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage))
+
+const paginatedItems = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  return filteredItems.value.slice(startIndex, endIndex)
+})
+
+const displayedPageNumbers = computed(() => {
+  const total = totalPages.value
+  const current = currentPage.value
+  const delta = 1
+
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+
+  let range = []
+  range.push(1)
+
+  const rangeStart = Math.max(2, current - delta)
+  const rangeEnd = Math.min(total - 1, current + delta)
+
+  if (rangeStart > 2) {
+    range.push('...')
+  }
+
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    range.push(i)
+  }
+
+  if (rangeEnd < total - 1) {
+    range.push('...')
+  }
+  if (total > 1) {
+    range.push(total)
+  }
+
+  return range
+})
+
+const changePage = (page) => {
+  if (page < 1 || page > totalPages.value) return
+  currentPage.value = page
+  // اسکرول به بالای صفحه
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 const fetchMenuItems = async () => {
   menuItems.length = 0
   loading.value = true
@@ -231,6 +363,7 @@ const fetchMenuItems = async () => {
 }
 
 onMounted(fetchMenuItems)
+
 const getCategoryIcon = (category) => {
   const icons = {
     همه: 'bi bi-grid-fill',

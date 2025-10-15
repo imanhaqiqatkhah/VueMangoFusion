@@ -35,16 +35,34 @@
                 <h5>لینک های سریع</h5>
               </div>
               <ul class="footer-links list-unstyled">
-                <li class="mb-2">
-                  <router-link :to="{ name: APP_ROUTE_NAMES.HOME }" class="footer-link">
+                <li>
+                  <router-link
+                    :to="{ name: APP_ROUTE_NAMES.HOME }"
+                    class="footer-link"
+                    @click="handleNavigation"
+                  >
                     <i class="bi bi-chevron-left me-2"></i>
                     خانه
                   </router-link>
                 </li>
                 <li>
-                  <router-link :to="{ name: APP_ROUTE_NAMES.CONTACT }" class="footer-link">
+                  <router-link
+                    :to="{ name: APP_ROUTE_NAMES.CONTACT }"
+                    class="footer-link"
+                    @click="handleNavigation"
+                  >
                     <i class="bi bi-chevron-left me-2"></i>
                     تماس با ما
+                  </router-link>
+                </li>
+                <li v-if="authStore.isAuthenticated">
+                  <router-link
+                    class="footer-link"
+                    :to="{ name: APP_ROUTE_NAMES.ORDER_LIST }"
+                    @click="handleNavigation"
+                  >
+                    <i class="bi bi-chevron-left me-2"></i>
+                    سفارشات
                   </router-link>
                 </li>
               </ul>
@@ -107,8 +125,37 @@
   </footer>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+import { useAuthStore } from '@/stores/authStore'
+const authStore = useAuthStore()
+
+const closeNavbar = () => {
+  const navbar = document.getElementById('navbarSupportedContent')
+  const toggler = document.querySelector('.navbar-toggler')
+
+  if (navbar && toggler && window.innerWidth < 768) {
+    if (navbar.classList.contains('show')) {
+      toggler.click()
+    }
+  }
+}
+
+const scrollToTop = () => {
+  // بستن نوبار در موبایل
+  closeNavbar()
+
+  // اسکرول نرم به بالای صفحه
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
+
+// برای لینک‌هایی که تغییر مسیر می‌دهند
+const handleNavigation = () => {
+  scrollToTop()
+}
 </script>
 <style scoped>
 * {

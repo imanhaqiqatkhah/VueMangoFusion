@@ -158,17 +158,16 @@ import { useSwal } from '@/composables/swal'
 import { useRouter } from 'vue-router'
 import {
   CATEGORIES,
-  SORT_NAME_A_Z,
-  SORT_NAME_Z_A,
   SORT_PRICE_LOW_HIGH,
   SORT_PRICE_HIGH_LOW,
+  SORT_NEWEST,
   SORT_OPTIONS,
 } from '@/constants/constants'
 const { showConfirm, showError, showSuccess } = useSwal()
 const menuItems = reactive([])
 const loading = ref(false)
 const selectedCategory = ref('همه')
-const selectedSortOption = ref(SORT_OPTIONS[0])
+const selectedSortOption = ref(SORT_OPTIONS[0]) // جدیدترین به عنوان پیش‌فرض
 const searchValue = ref('')
 const router = useRouter()
 const categoryList = reactive(['همه', ...CATEGORIES])
@@ -191,6 +190,7 @@ function updateSelectedCategory(category) {
 function updateSelectedSortOption(sort) {
   selectedSortOption.value = sort
 }
+
 const filteredItems = computed(() => {
   let tempArray =
     selectedCategory.value == 'همه'
@@ -205,18 +205,15 @@ const filteredItems = computed(() => {
     )
   }
 
-  if (selectedSortOption.value == SORT_NAME_A_Z) {
-    tempArray.sort((a, b) => a.name.localeCompare(b.name))
-  }
-  if (selectedSortOption.value == SORT_NAME_Z_A) {
-    tempArray.sort((a, b) => b.name.localeCompare(a.name))
-  }
-  if (selectedSortOption.value == SORT_PRICE_LOW_HIGH) {
+  // مرتب‌سازی ساده‌شده
+  if (selectedSortOption.value === SORT_NEWEST) {
+    tempArray.sort((a, b) => b.id - a.id) // یا بر اساس تاریخ
+  } else if (selectedSortOption.value === SORT_PRICE_LOW_HIGH) {
     tempArray.sort((a, b) => a.price - b.price)
-  }
-  if (selectedSortOption.value == SORT_PRICE_HIGH_LOW) {
+  } else if (selectedSortOption.value === SORT_PRICE_HIGH_LOW) {
     tempArray.sort((a, b) => b.price - a.price)
   }
+
   return tempArray
 })
 
@@ -250,11 +247,9 @@ const getCategoryIcon = (category) => {
   }
   return icons[category] || 'bi bi-circle'
 }
-
 const getSortIcon = (sort) => {
   const icons = {
-    'نام (الف-ی)': 'bi bi-sort-alpha-down',
-    'نام (ی-الف)': 'bi bi-sort-alpha-up',
+    جدیدترین: 'bi bi-clock-history',
     'قیمت (کم به زیاد)': 'bi bi-sort-numeric-down',
     'قیمت (زیاد به کم)': 'bi bi-sort-numeric-up',
   }

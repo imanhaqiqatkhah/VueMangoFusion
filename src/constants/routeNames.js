@@ -13,4 +13,5 @@ export const APP_ROUTE_NAMES = Object.freeze({
   ORDER_CONFIRM: 'order-confirmed',
   CONTACT: 'contact',
   PHONE_SIGN_IN: 'phoneSignIn',
+  PHONE_SIGN_UP: 'phoneSignUp', // اضافه شده
 })

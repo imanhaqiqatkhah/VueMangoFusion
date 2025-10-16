@@ -8,6 +8,20 @@
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
             <h2 class="text-center mb-4">ثبت نام</h2>
+
+            <!-- لینک ثبت‌نام با شماره تلفن -->
+            <div class="text-center mb-4">
+              <router-link
+                :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_UP }"
+                class="btn btn-warning w-100 mb-3"
+              >
+                <i class="bi bi-phone me-2"></i>
+                ثبت نام با شماره تلفن
+              </router-link>
+              <div class="text-muted small">یا</div>
+            </div>
+
+            <!-- فرم ثبت‌نام با ایمیل -->
             <form @submit.prevent="onSignUpSubmit">
               <div class="mb-3">
                 <label for="name" class="form-label">نام کامل</label>
@@ -39,7 +53,7 @@
               <div class="alert alert-danger" v-if="errorList.length > 0">
                 <span v-for="error in errorList" :key="error" class="d-block">{{ error }}</span>
               </div>
-              <button :disabled="isLoading" type="submit" class="btn btn-secondary w-100">
+              <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                 <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
                 ثبت نام
               </button>

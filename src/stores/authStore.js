@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { reactive, ref, computed } from 'vue'
 import authService from '@/services/authService'
+import smsService from '@/services/smsService' // اضافه شده
 import router from '@/router/routes'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useSwal } from '@/composables/swal'
 import Cookies from 'js-cookie'
+
 export const useAuthStore = defineStore('authStore', () => {
   // state
   const user = reactive({
@@ -12,6 +14,7 @@ export const useAuthStore = defineStore('authStore', () => {
     password: '',
     name: '',
     id: '',
+    role: '', // اضافه شده
   })
 
   const isAuthenticated = ref(false)
@@ -70,6 +73,27 @@ export const useAuthStore = defineStore('authStore', () => {
       }
     }
   }
+  async function signUpWithPhone(userData) {
+    try {
+      // استفاده از ثبت‌نام معمولی تا زمانی که SMS کامل شود
+      const result = await authService.signUp(userData)
+
+      if (result && !result.success) {
+        return result
+      }
+
+      const { showSuccess } = useSwal()
+      showSuccess('ثبت نام با موفقیت انجام شد')
+      router.push({ name: APP_ROUTE_NAMES.SIGN_IN })
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join('--') || 'خطا در ثبت نام با شماره تلفن',
+      }
+    }
+  }
 
   async function signIn(formObj) {
     try {
@@ -80,13 +104,79 @@ export const useAuthStore = defineStore('authStore', () => {
       Cookies.set('token_cloudLand', token, { expires: 1 })
 
       router.push('/')
-      //const { showSuccess } = useSwal()
-      //showSuccess('ثبت نام با موفقیت انجام شد')
-      // router.push({ name: APP_ROUTE_NAMES.SIGN_IN })
     } catch (err) {
       return {
         success: false,
         message: err.response?.data?.errorMessages?.join('--') || 'خطا در ورود به سیستم',
+      }
+    }
+  }
+
+  // 🔥 متد جدید برای ورود با SMS
+  async function signInWithSms(phoneNumber, code) {
+    try {
+      const result = await smsService.verifyLoginCode(phoneNumber, code)
+
+      // ذخیره توکن
+      Cookies.set('token_cloudLand', result.token, { expires: 1 })
+
+      // دیکد کردن توکن و ذخیره اطلاعات کاربر
+      const userData = decodeToken(result.token)
+      Object.assign(user, userData)
+      isAuthenticated.value = true
+
+      // هدایت به صفحه اصلی
+      router.push('/')
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join('--') || 'خطا در ورود با SMS',
+      }
+    }
+  }
+
+  // 🔥 متد جدید برای ارسال کد SMS
+  async function sendSmsCode(phoneNumber) {
+    try {
+      const result = await smsService.sendLoginCode(phoneNumber)
+      return result
+    } catch (err) {
+      throw new Error(err.response?.data?.errorMessages?.join('--') || 'خطا در ارسال کد')
+    }
+  }
+
+  // 🔥 متد جدید برای ثبت‌نام دو مرحله‌ای با SMS
+  async function signUpWithPhoneTwoStep(userData) {
+    try {
+      // مرحله ۱: ارسال کد تأیید
+      const result = await smsService.sendRegisterCode(userData)
+      return result
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join('--') || 'خطا در ارسال کد ثبت‌نام',
+      }
+    }
+  }
+
+  // 🔥 متد جدید برای تأیید کد و تکمیل ثبت‌نام
+  async function verifyPhoneRegister(phoneNumber, code) {
+    try {
+      const result = await smsService.verifyRegisterCode(phoneNumber, code)
+
+      // ذخیره توکن و لاگین اتوماتیک
+      Cookies.set('token_cloudLand', result.token, { expires: 1 })
+      const userData = decodeToken(result.token)
+      Object.assign(user, userData)
+      isAuthenticated.value = true
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join('--') || 'خطا در تأیید کد ثبت‌نام',
       }
     }
   }
@@ -97,6 +187,7 @@ export const useAuthStore = defineStore('authStore', () => {
       password: '',
       name: '',
       id: '',
+      role: '',
     })
     isAuthenticated.value = false
     Cookies.remove('token_cloudLand')
@@ -107,5 +198,19 @@ export const useAuthStore = defineStore('authStore', () => {
     router.push({ name: APP_ROUTE_NAMES.HOME })
   }
 
-  return { user, isAuthenticated, getUserInfo, isAdmin, signUp, signIn, initialize, signOut }
+  return {
+    user,
+    isAuthenticated,
+    getUserInfo,
+    isAdmin,
+    signUp,
+    signIn,
+    signInWithSms,
+    signUpWithPhone, // ثبت‌نام مستقیم
+    signUpWithPhoneTwoStep, // ثبت‌نام دو مرحله‌ای
+    verifyPhoneRegister, // تأیید کد ثبت‌نام
+    sendSmsCode,
+    initialize,
+    signOut,
+  }
 })

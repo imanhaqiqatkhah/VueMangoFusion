@@ -8,6 +8,20 @@
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
             <h2 class="text-center mb-4">ورود</h2>
+
+            <!-- لینک ورود با شماره تلفن -->
+            <div class="text-center mb-4">
+              <router-link
+                :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_IN }"
+                class="btn btn-warning w-100 mb-3"
+              >
+                <i class="bi bi-phone me-2"></i>
+                ورود با شماره تلفن
+              </router-link>
+              <div class="text-muted small">یا</div>
+            </div>
+
+            <!-- فرم ورود با ایمیل -->
             <form @submit.prevent="onSignInSubmit">
               <div class="mb-3">
                 <label for="email" class="form-label">ایمیل</label>
@@ -25,7 +39,7 @@
               <div class="alert alert-danger" v-if="errorList.length > 0">
                 <span v-for="error in errorList" :key="error" class="d-block">{{ error }}</span>
               </div>
-              <button :disabled="isLoading" type="submit" class="btn btn-secondary w-100">
+              <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                 <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>ورود
               </button>
             </form>
@@ -42,10 +56,10 @@
 </template>
 
 <script setup>
-import { ROLES } from '@/constants/constants'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useAuthStore } from '@/stores/authStore'
 import { reactive, ref } from 'vue'
+
 const authStore = useAuthStore()
 const formObj = reactive({
   email: '',
@@ -53,12 +67,11 @@ const formObj = reactive({
 })
 
 const isLoading = ref(false)
-
 const errorList = reactive([])
 
+// متد موجود بدون تغییر
 const onSignInSubmit = async () => {
   isLoading.value = true
-
   errorList.length = 0
 
   if (formObj.email === undefined || formObj.email.length === 0) {
@@ -86,7 +99,7 @@ const onSignInSubmit = async () => {
       }
     }
   } catch (err) {
-    errorList.push(err)
+    errorList.push(err.message || 'خطا در ورود')
   } finally {
     isLoading.value = false
   }

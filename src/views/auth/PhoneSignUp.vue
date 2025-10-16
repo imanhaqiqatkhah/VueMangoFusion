@@ -107,9 +107,7 @@
             </div> -->
 
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_IN }"
-                >حساب دارید؟ ورود</router-link
-              >
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }">حساب دارید؟ ورود</router-link>
             </div>
           </div>
         </div>

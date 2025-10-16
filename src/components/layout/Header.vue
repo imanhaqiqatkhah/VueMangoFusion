@@ -124,7 +124,7 @@
             <router-link
               class="nav-link"
               aria-current="page"
-              :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_IN }"
+              :to="{ name: APP_ROUTE_NAMES.SIGN_IN }"
               @click="closeNavbar"
               >ورود</router-link
             >

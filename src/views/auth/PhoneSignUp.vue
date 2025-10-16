@@ -7,7 +7,7 @@
             <div class="text-center">
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
-            <h2 class="text-center mb-4">ثبت نام با شماره تلفن</h2>
+            <h2 class="text-center mb-4">ثبت نام</h2>
 
             <!-- مرحله ۱: اطلاعات کاربر -->
             <div v-if="step === 1">
@@ -29,7 +29,6 @@
                     class="form-control"
                     id="phoneNumber"
                     v-model="formObj.phoneNumber"
-                    placeholder="09xxxxxxxxx"
                     dir="ltr"
                   />
                 </div>
@@ -50,7 +49,7 @@
 
                 <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                   <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
-                  دریافت کد تأیید
+                  ثبت نام
                 </button>
               </form>
             </div>
@@ -72,7 +71,7 @@
                     dir="ltr"
                     style="font-size: 1.5rem; letter-spacing: 0.5rem"
                   />
-                  <small class="text-muted">کد تست: {{ debugCode }}</small>
+                  <!-- <small class="text-muted">کد تست: {{ debugCode }}</small> -->
                 </div>
 
                 <div class="mb-3 text-center">
@@ -102,9 +101,15 @@
                 </div>
               </form>
             </div>
-
+            <!-- 
             <div class="text-center mt-3">
               <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_UP }"> ثبت نام با ایمیل </router-link>
+            </div> -->
+
+            <div class="text-center mt-3">
+              <router-link :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_IN }"
+                >حساب دارید؟ ورود</router-link
+              >
             </div>
           </div>
         </div>

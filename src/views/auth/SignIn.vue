@@ -44,7 +44,7 @@
               </button>
             </form>
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_UP }"
+              <router-link :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_UP }"
                 >حساب ندارید؟ ثبت نام</router-link
               >
             </div>

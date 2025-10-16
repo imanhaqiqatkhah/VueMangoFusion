@@ -181,6 +181,7 @@ const handleSignOut = async () => {
 
     if (confirmResult.isConfirmed) {
       closeNavbar()
+      cartStore.clearCart()
       await authStore.signOut()
       showSuccess('با موفقیت خارج شدید')
     }

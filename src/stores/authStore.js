@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { reactive, ref, computed } from 'vue'
 import authService from '@/services/authService'
-import smsService from '@/services/smsService' // اضافه شده
+import smsService from '@/services/smsService'
+import api from '@/services/api' // ✅ اضافه شد
 import router from '@/router/routes'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useSwal } from '@/composables/swal'
@@ -14,7 +15,8 @@ export const useAuthStore = defineStore('authStore', () => {
     password: '',
     name: '',
     id: '',
-    role: '', // اضافه شده
+    role: '',
+    phoneNumber: '', // ✅ اضافه شد
   })
 
   const isAuthenticated = ref(false)
@@ -29,12 +31,21 @@ export const useAuthStore = defineStore('authStore', () => {
   })
 
   function decodeToken(token) {
-    const payload = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))))
-    return {
-      email: payload.email,
-      role: payload.role,
-      name: payload.fullname,
-      id: payload.id,
+    try {
+      const payload = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))))
+      console.log('🔐 FULL Token payload:', payload) // کل payload رو ببین
+
+      return {
+        email: payload.email || '',
+        role: payload.role || '',
+        name: payload.fullname || payload.name || '',
+        id: payload.id || payload.nameid || '',
+        phoneNumber:
+          payload.phoneNumber || payload.PhoneNumber || payload.mobilephone || payload.phone || '',
+      }
+    } catch (error) {
+      console.error('❌ Error decoding token:', error)
+      return null
     }
   }
 
@@ -60,6 +71,26 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
+  // ✅ متد جدید: دریافت کاربر بر اساس شماره تلفن
+  async function getUserByPhone(phoneNumber) {
+    try {
+      const response = await api.get(
+        `/SmsAuth/user-by-phone?phoneNumber=${encodeURIComponent(phoneNumber)}`,
+      )
+
+      if (response.data.inSuccess) {
+        return response.data.result
+      } else {
+        throw new Error(response.data.errorMessages?.join(', ') || 'کاربر یافت نشد')
+      }
+    } catch (error) {
+      console.error('Error fetching user by phone:', error)
+      throw new Error(
+        error.response?.data?.errorMessages?.join(', ') || 'خطا در دریافت اطلاعات کاربر',
+      )
+    }
+  }
+
   async function signUp(userData) {
     try {
       await authService.signUp(userData)
@@ -73,9 +104,9 @@ export const useAuthStore = defineStore('authStore', () => {
       }
     }
   }
+
   async function signUpWithPhone(userData) {
     try {
-      // استفاده از ثبت‌نام معمولی تا زمانی که SMS کامل شود
       const result = await authService.signUp(userData)
 
       if (result && !result.success) {
@@ -112,24 +143,45 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  // 🔥 متد جدید برای ورود با SMS
   async function signInWithSms(phoneNumber, code) {
     try {
       const result = await smsService.verifyLoginCode(phoneNumber, code)
 
+      console.log('📱 SMS login result:', result)
+
       // ذخیره توکن
       Cookies.set('token_cloudLand', result.token, { expires: 1 })
 
-      // دیکد کردن توکن و ذخیره اطلاعات کاربر
+      // دیکد کردن توکن
       const userData = decodeToken(result.token)
+      console.log('🔐 Decoded user data:', userData)
+
+      // پر کردن اطلاعات کاربر
       Object.assign(user, userData)
+
+      // 🔥 مهم: شماره تلفن رو حتماً ست کن
+      user.phoneNumber = phoneNumber
       isAuthenticated.value = true
 
-      // هدایت به صفحه اصلی
+      // 🔥 در localStorage هم ذخیره کن
+      localStorage.setItem('userPhone', phoneNumber)
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          name: user.name,
+          email: user.email,
+          phoneNumber: phoneNumber,
+        }),
+      )
+
+      console.log('✅ User after SMS login:', user)
+      console.log('✅ Phone number saved to localStorage:', phoneNumber)
+
       router.push('/')
 
       return { success: true }
     } catch (err) {
+      console.error('❌ SMS login error:', err)
       return {
         success: false,
         message: err.response?.data?.errorMessages?.join('--') || 'خطا در ورود با SMS',
@@ -137,7 +189,6 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  // 🔥 متد جدید برای ارسال کد SMS
   async function sendSmsCode(phoneNumber) {
     try {
       const result = await smsService.sendLoginCode(phoneNumber)
@@ -147,10 +198,8 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  // 🔥 متد جدید برای ثبت‌نام دو مرحله‌ای با SMS
   async function signUpWithPhoneTwoStep(userData) {
     try {
-      // مرحله ۱: ارسال کد تأیید
       const result = await smsService.sendRegisterCode(userData)
       return result
     } catch (err) {
@@ -161,16 +210,29 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  // 🔥 متد جدید برای تأیید کد و تکمیل ثبت‌نام
   async function verifyPhoneRegister(phoneNumber, code) {
     try {
       const result = await smsService.verifyRegisterCode(phoneNumber, code)
 
-      // ذخیره توکن و لاگین اتوماتیک
       Cookies.set('token_cloudLand', result.token, { expires: 1 })
       const userData = decodeToken(result.token)
+
       Object.assign(user, userData)
+
+      // 🔥 شماره تلفن رو ذخیره کن
+      user.phoneNumber = phoneNumber
       isAuthenticated.value = true
+
+      // 🔥 در localStorage ذخیره کن
+      localStorage.setItem('userPhone', phoneNumber)
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          name: user.name,
+          email: user.email,
+          phoneNumber: phoneNumber,
+        }),
+      )
 
       return { success: true }
     } catch (err) {
@@ -188,6 +250,7 @@ export const useAuthStore = defineStore('authStore', () => {
       name: '',
       id: '',
       role: '',
+      phoneNumber: '', // ✅ اضافه شد
     })
     isAuthenticated.value = false
     Cookies.remove('token_cloudLand')
@@ -206,10 +269,11 @@ export const useAuthStore = defineStore('authStore', () => {
     signUp,
     signIn,
     signInWithSms,
-    signUpWithPhone, // ثبت‌نام مستقیم
-    signUpWithPhoneTwoStep, // ثبت‌نام دو مرحله‌ای
-    verifyPhoneRegister, // تأیید کد ثبت‌نام
+    signUpWithPhone,
+    signUpWithPhoneTwoStep,
+    verifyPhoneRegister,
     sendSmsCode,
+    getUserByPhone, // ✅ اضافه شد
     initialize,
     signOut,
   }

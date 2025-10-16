@@ -133,10 +133,6 @@ const removeItem = (itemId) => {
 }
 
 const checkout = () => {
-  if (cartStore.cartCount.value === 0) {
-    showError('سبد خرید خالی است')
-    return
-  }
   showOrderModal.value = true
 }
 

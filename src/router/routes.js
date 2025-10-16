@@ -16,6 +16,8 @@ import { createRouter, createWebHashHistory } from 'vue-router' // ✅ تغیی�
 import { requireAdmin, requireAuth } from './guards'
 import Contact from '@/views/contact/Contact.vue'
 
+import PhoneSignIn from '@/views/PhoneSignIn.vue' // اضافه شده
+
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL), // ✅ از hash mode استفاده کن
   routes: [
@@ -69,6 +71,11 @@ const router = createRouter({
       beforeEnter: [requireAdmin],
     },
     { path: '/:catchAll(.*)', name: APP_ROUTE_NAMES.NOT_FOUND, component: NotFound },
+    {
+      path: '/phone-signin',
+      name: APP_ROUTE_NAMES.PHONE_SIGN_IN,
+      component: PhoneSignIn,
+    },
   ],
 })
 

@@ -12,4 +12,5 @@ export const APP_ROUTE_NAMES = Object.freeze({
   ACCESS_DENIED: 'access-denied',
   ORDER_CONFIRM: 'order-confirmed',
   CONTACT: 'contact',
+  PHONE_SIGN_IN: 'phoneSignIn',
 })

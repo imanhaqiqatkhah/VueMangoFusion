@@ -25,7 +25,7 @@
               <!-- دکمه ثبت نام با ایمیل -->
               <router-link
                 :to="{ name: APP_ROUTE_NAMES.EMAIL_SIGN_UP }"
-                class="btn btn-outline-warning w-100 py-3"
+                class="btn btn-outline-warning w-100 py-3 disabled"
               >
                 <i class="bi bi-envelope me-2"></i>
                 ثبت نام با ایمیل

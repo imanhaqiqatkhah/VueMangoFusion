@@ -22,6 +22,18 @@
                   <input type="email" class="form-control" id="email" v-model="formObj.email" />
                 </div>
 
+                <!-- 🔥 اضافه شده: فیلد شماره تلفن -->
+                <div class="mb-3">
+                  <label for="phoneNumber" class="form-label">شماره تلفن</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phoneNumber"
+                    v-model="formObj.phoneNumber"
+                    dir="ltr"
+                  />
+                </div>
+
                 <div class="mb-3">
                   <label for="password" class="form-label">رمز عبور</label>
                   <input
@@ -38,7 +50,7 @@
 
                 <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                   <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
-                  دریافت کد تأیید
+                  دریافت کد تأیید ایمیل
                 </button>
               </form>
             </div>
@@ -60,7 +72,6 @@
                     dir="ltr"
                     style="font-size: 1.5rem; letter-spacing: 0.5rem"
                   />
-                  <small class="text-muted" v-if="debugCode">کد تست: {{ debugCode }}</small>
                 </div>
 
                 <div class="mb-3 text-center">
@@ -92,12 +103,8 @@
             </div>
 
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.EMAIL_SIGN_IN }">
-                ورود با ایمیل
-              </router-link>
-              <span class="mx-2">|</span>
-              <router-link :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_UP }">
-                ثبت نام با شماره تلفن
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_UP }" class="text-decoration-none">
+                برگشت
               </router-link>
             </div>
           </div>
@@ -120,6 +127,7 @@ const step = ref(1)
 const formObj = reactive({
   name: '',
   email: '',
+  phoneNumber: '', // 🔥 اضافه شده
   password: '',
 })
 const verificationCode = ref('')
@@ -144,6 +152,7 @@ const sendVerificationCode = async () => {
   isLoading.value = true
   errorList.length = 0
 
+  // 🔥 آپدیت شده: اضافه کردن validation شماره تلفن
   if (!formObj.name || formObj.name.trim().length === 0) {
     errorList.push('نام را وارد کنید')
   }
@@ -155,6 +164,13 @@ const sendVerificationCode = async () => {
     if (!emailRegex.test(formObj.email)) {
       errorList.push('فرمت ایمیل نامعتبر است')
     }
+  }
+
+  // 🔥 اضافه شده: validation شماره تلفن
+  if (!formObj.phoneNumber || formObj.phoneNumber.trim().length === 0) {
+    errorList.push('شماره تلفن را وارد کنید')
+  } else if (formObj.phoneNumber.length !== 11 || !formObj.phoneNumber.startsWith('09')) {
+    errorList.push('شماره تلفن معتبر نیست (مثال: 09123456789)')
   }
 
   if (!formObj.password || formObj.password.length === 0) {
@@ -169,7 +185,7 @@ const sendVerificationCode = async () => {
   }
 
   try {
-    // اینجا باید متد جدید برای ثبت‌نام با ایمیل بسازی
+    // 🔥 تغییر: استفاده از متد جدید که شماره تلفن هم ارسال کنه
     const result = await authStore.signUpWithEmailTwoStep(formObj)
 
     if (result && result.success) {
@@ -197,7 +213,6 @@ const verifyAndRegister = async () => {
   }
 
   try {
-    // اینجا باید متد جدید برای تأیید ثبت‌نام ایمیل بسازی
     const result = await authStore.verifyEmailRegister(formObj.email, verificationCode.value)
 
     if (result && result.success) {

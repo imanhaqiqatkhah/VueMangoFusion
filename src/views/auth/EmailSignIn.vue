@@ -7,7 +7,7 @@
             <div class="text-center">
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
-            <h2 class="text-center mb-4">ورود با کد تأیید ایمیل</h2>
+            <h2 class="text-center mb-4">ورود با ایمیل</h2>
 
             <!-- مرحله ۱: وارد کردن ایمیل -->
             <div v-if="step === 1">
@@ -72,10 +72,8 @@
             </div>
 
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }"> ورود با رمز عبور </router-link>
-              <span class="mx-2">|</span>
-              <router-link :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_IN }">
-                ورود با شماره تلفن
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }" class="text-decoration-none">
+                برگشت
               </router-link>
             </div>
           </div>

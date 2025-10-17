@@ -7,59 +7,45 @@
             <div class="text-center">
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
-            <h2 class="text-center mb-4">ثبت نام</h2>
+            <h2 class="text-center mb-4">انتخاب روش ثبت نام</h2>
 
-            <!-- لینک ثبت‌نام با شماره تلفن -->
-            <div class="text-center mb-4">
+            <!-- 🔥 تغییر: جایگزینی فرم با دکمه‌های مجزا -->
+            <div class="text-center">
+              <!-- دکمه ثبت نام با تلفن -->
               <router-link
                 :to="{ name: APP_ROUTE_NAMES.PHONE_SIGN_UP }"
-                class="btn btn-warning w-100 mb-3"
+                class="btn btn-warning w-100 mb-3 py-3"
               >
                 <i class="bi bi-phone me-2"></i>
                 ثبت نام با شماره تلفن
               </router-link>
-              <div class="text-muted small">یا</div>
+
+              <div class="text-muted small my-3">یا</div>
+
+              <!-- دکمه ثبت نام با ایمیل -->
+              <router-link
+                :to="{ name: APP_ROUTE_NAMES.EMAIL_SIGN_UP }"
+                class="btn btn-outline-warning w-100 py-3"
+              >
+                <i class="bi bi-envelope me-2"></i>
+                ثبت نام با ایمیل
+              </router-link>
             </div>
 
-            <!-- فرم ثبت‌نام با ایمیل -->
-            <form @submit.prevent="onSignUpSubmit">
-              <div class="mb-3">
-                <label for="name" class="form-label">نام کامل</label>
-                <input type="text" class="form-control" id="name" v-model="formObj.name" />
+            <div class="text-center mt-4">
+              <p class="text-muted small mb-2">هر دو روش نیازمند:</p>
+              <div class="d-flex justify-content-center gap-3 small text-muted">
+                <span><i class="bi bi-person me-1"></i>نام کامل</span>
+                <span><i class="bi bi-envelope me-1"></i>ایمیل</span>
+                <span><i class="bi bi-phone me-1"></i>شماره تلفن</span>
+                <span><i class="bi bi-lock me-1"></i>رمز عبور</span>
               </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">ایمیل</label>
-                <input type="email" class="form-control" id="email" v-model="formObj.email" />
-              </div>
+            </div>
 
-              <div class="mb-3">
-                <label for="role" class="form-label">نقش</label>
-                <select class="form-select" id="role" v-model="formObj.role">
-                  <option v-for="role in ROLE_OPTIONS" :key="role.value" :value="role.value">
-                    {{ role.label }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="password" class="form-label">رمز عبور</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  v-model="formObj.password"
-                  id="password"
-                />
-              </div>
-              <div class="alert alert-danger" v-if="errorList.length > 0">
-                <span v-for="error in errorList" :key="error" class="d-block">{{ error }}</span>
-              </div>
-              <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
-                <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
-                ثبت نام
-              </button>
-            </form>
-            <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }">حساب دارید؟ ورود</router-link>
+            <div class="text-center mt-4">
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }" class="text-decoration-none">
+                حساب دارید؟ ورود
+              </router-link>
             </div>
           </div>
         </div>
@@ -69,76 +55,22 @@
 </template>
 
 <script setup>
-import { ROLE_OPTIONS } from '@/constants/constants' // تغییر از ROLES به ROLE_OPTIONS
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
-import { useAuthStore } from '@/stores/authStore'
-import { reactive, ref } from 'vue'
-
-const authStore = useAuthStore()
-const formObj = reactive({
-  name: '',
-  email: '',
-  password: '',
-  role: 'Customer', // همچنان مقدار انگلیسی
-})
-
-const isLoading = ref(false)
-const errorList = reactive([])
-
-const onSignUpSubmit = async () => {
-  isLoading.value = true
-  errorList.length = 0
-
-  // اعتبارسنجی‌های بهتر
-  if (!formObj.name || formObj.name.trim().length === 0) {
-    errorList.push('نام را وارد کنید')
-  }
-
-  if (!formObj.email || formObj.email.trim().length === 0) {
-    errorList.push('ایمیل را وارد کنید')
-  } else {
-    // اعتبارسنجی فرمت ایمیل
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formObj.email)) {
-      errorList.push('فرمت ایمیل نامعتبر است')
-    }
-  }
-
-  if (!formObj.password || formObj.password.length === 0) {
-    errorList.push('رمز عبور را وارد کنید')
-  } else if (formObj.password.length < 6) {
-    errorList.push('رمز عبور باید حداقل ۶ کاراکتر باشد')
-  }
-
-  if (errorList.length > 0) {
-    isLoading.value = false
-    return
-  }
-
-  try {
-    const response = await authStore.signUp(formObj)
-    console.log(response)
-
-    if (response && !response.success) {
-      if (response.message) {
-        response.message.split('--').forEach((error) => {
-          errorList.push(error)
-        })
-      }
-    }
-    // اگر success باشد، کاربر به صفحه ورود هدایت می‌شود (طبق کد authStore)
-  } catch (err) {
-    console.error('Sign up error:', err)
-    errorList.push('خطا در ثبت نام. لطفاً دوباره تلاش کنید.')
-  } finally {
-    isLoading.value = false
-  }
-}
 </script>
 
 <style scoped>
 * {
   direction: rtl;
   font-family: 'Yekan';
+}
+
+.btn {
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

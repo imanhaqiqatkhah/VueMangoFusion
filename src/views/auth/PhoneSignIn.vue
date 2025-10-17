@@ -7,7 +7,7 @@
             <div class="text-center">
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
-            <h2 class="text-center mb-4">ورود</h2>
+            <h2 class="text-center mb-4">ورود با شماره تلفن</h2>
 
             <!-- مرحله ۱: وارد کردن شماره تلفن -->
             <div v-if="step === 1">
@@ -27,7 +27,7 @@
                 </div>
                 <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                   <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
-                  ورود
+                  دریافت کد تایید
                 </button>
               </form>
             </div>
@@ -77,7 +77,9 @@
             </div>
 
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }">ورود با ایمیل</router-link>
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }" class="text-decoration-none"
+                >برگشت</router-link
+              >
             </div>
           </div>
         </div>

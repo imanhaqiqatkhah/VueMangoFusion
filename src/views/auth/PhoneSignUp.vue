@@ -7,7 +7,7 @@
             <div class="text-center">
               <img src="/src/assets/mini-logo.png" alt="logo" width="150px;" />
             </div>
-            <h2 class="text-center mb-4">ثبت نام</h2>
+            <h2 class="text-center mb-4">ثبت نام با شماره تلفن</h2>
 
             <!-- مرحله ۱: اطلاعات کاربر -->
             <div v-if="step === 1">
@@ -49,7 +49,7 @@
 
                 <button :disabled="isLoading" type="submit" class="btn btn-warning w-100">
                   <span v-if="isLoading" class="spinner-border spinner-border-sm ms-2"></span>
-                  ثبت نام
+                  دریافت کد تایید شماره تلفن
                 </button>
               </form>
             </div>
@@ -107,7 +107,9 @@
             </div> -->
 
             <div class="text-center mt-3">
-              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_IN }">حساب دارید؟ ورود</router-link>
+              <router-link :to="{ name: APP_ROUTE_NAMES.SIGN_UP }" class="text-decoration-none">
+                برگشت
+              </router-link>
             </div>
           </div>
         </div>

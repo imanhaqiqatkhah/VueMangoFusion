@@ -118,11 +118,16 @@ export const useAuthStore = defineStore('authStore', () => {
 
   async function signUpWithEmailTwoStep(userData) {
     try {
+      console.log('📧 [DEBUG] Sending email register data:', userData)
+
       const response = await api.post('/SmsAuth/send-email-register-code', {
         name: userData.name,
         email: userData.email,
+        phoneNumber: userData.phoneNumber, // 🔥 این خط باید وجود داشته باشه
         password: userData.password,
       })
+
+      console.log('📧 [DEBUG] Response:', response.data)
 
       if (response.data.inSuccess) {
         return {
@@ -137,7 +142,7 @@ export const useAuthStore = defineStore('authStore', () => {
         }
       }
     } catch (err) {
-      console.error('Error sending email register code:', err)
+      console.error('📧 [DEBUG] Error details:', err.response?.data)
       return {
         success: false,
         message: err.response?.data?.errorMessages?.join(', ') || 'خطا در ارسال کد ثبت‌نام',
@@ -278,12 +283,35 @@ export const useAuthStore = defineStore('authStore', () => {
 
   async function signUpWithPhoneTwoStep(userData) {
     try {
-      const result = await smsService.sendRegisterCode(userData)
-      return result
+      console.log('📱 [DEBUG] Sending phone register data:', userData)
+
+      const response = await api.post('/SmsAuth/send-register-code', {
+        name: userData.name,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        password: userData.password,
+        role: userData.role || 'Customer',
+      })
+
+      console.log('📱 [DEBUG] Response:', response.data)
+
+      if (response.data.inSuccess) {
+        return {
+          success: true,
+          message: 'کد تأیید ارسال شد',
+          debugCode: response.data.result.debugCode,
+        }
+      } else {
+        return {
+          success: false,
+          message: response.data.errorMessages?.join(', ') || 'خطا در ارسال کد ثبت‌نام',
+        }
+      }
     } catch (err) {
+      console.error('Error sending phone register code:', err.response?.data)
       return {
         success: false,
-        message: err.response?.data?.errorMessages?.join('--') || 'خطا در ارسال کد ثبت‌نام',
+        message: err.response?.data?.errorMessages?.join(', ') || 'خطا در ارسال کد ثبت‌نام',
       }
     }
   }

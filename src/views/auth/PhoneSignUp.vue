@@ -179,13 +179,12 @@ const sendVerificationCode = async () => {
   ) {
     errorList.push('شماره تلفن معتبر نیست')
   }
-
   if (!formObj.password || formObj.password.length === 0) {
     errorList.push('رمز عبور را وارد کنید')
-  } else if (formObj.password.length < 6) {
-    errorList.push('رمز عبور باید حداقل ۶ کاراکتر باشد')
+  } else if (formObj.password.length < 4) {
+    // 🔥 از ۶ به ۴ تغییر دادم
+    errorList.push('رمز عبور باید حداقل ۴ کاراکتر باشد') // 🔥 متن رو هم آپدیت کن
   }
-
   if (errorList.length > 0) {
     isLoading.value = false
     return

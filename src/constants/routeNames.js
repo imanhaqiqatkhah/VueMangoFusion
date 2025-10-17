@@ -14,4 +14,6 @@ export const APP_ROUTE_NAMES = Object.freeze({
   CONTACT: 'contact',
   PHONE_SIGN_IN: 'phoneSignIn',
   PHONE_SIGN_UP: 'phoneSignUp', // اضافه شده
+  EMAIL_SIGN_IN: 'emailSignIn',
+  EMAIL_SIGN_UP: 'emailSignUp',
 })

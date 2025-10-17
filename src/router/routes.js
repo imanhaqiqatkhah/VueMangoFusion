@@ -18,6 +18,8 @@ import Contact from '@/views/contact/Contact.vue'
 
 import PhoneSignIn from '@/views/auth/PhoneSignIn.vue' // اضافه شده
 import PhoneSignUp from '@/views/auth/PhoneSignUp.vue' // اضافه شده
+import EmailSignIn from '@/views/auth/EmailSignIn.vue'
+import EmailSignUp from '@/views/auth/EmailSignUp.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL), // ✅ از hash mode استفاده کن
@@ -81,6 +83,16 @@ const router = createRouter({
       path: '/phone-signup',
       name: APP_ROUTE_NAMES.PHONE_SIGN_UP,
       component: PhoneSignUp,
+    },
+    {
+      path: '/email-signin',
+      name: APP_ROUTE_NAMES.EMAIL_SIGN_IN,
+      component: EmailSignIn,
+    },
+    {
+      path: '/email-signup',
+      name: APP_ROUTE_NAMES.EMAIL_SIGN_UP,
+      component: EmailSignUp,
     },
   ],
 })

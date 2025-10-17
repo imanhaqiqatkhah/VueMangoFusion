@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { reactive, ref, computed } from 'vue'
 import authService from '@/services/authService'
 import smsService from '@/services/smsService'
-import api from '@/services/api' // ✅ اضافه شد
+import api from '@/services/api'
 import router from '@/router/routes'
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useSwal } from '@/composables/swal'
@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('authStore', () => {
     name: '',
     id: '',
     role: '',
-    phoneNumber: '', // ✅ اضافه شد
+    phoneNumber: '',
   })
 
   const isAuthenticated = ref(false)
@@ -33,8 +33,6 @@ export const useAuthStore = defineStore('authStore', () => {
   function decodeToken(token) {
     try {
       const payload = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))))
-      console.log('🔐 FULL Token payload:', payload) // کل payload رو ببین
-
       return {
         email: payload.email || '',
         role: payload.role || '',
@@ -50,7 +48,6 @@ export const useAuthStore = defineStore('authStore', () => {
   }
 
   // actions
-
   function initialize() {
     try {
       const token = Cookies.get('token_cloudLand')
@@ -71,13 +68,118 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  // ✅ متد جدید: دریافت کاربر بر اساس شماره تلفن
+  async function sendEmailCode(email) {
+    try {
+      const response = await api.post('/SmsAuth/send-email-code', {
+        email: email,
+      })
+
+      if (response.data.inSuccess) {
+        return {
+          success: true,
+          message: 'کد تأیید ارسال شد',
+          debugCode: response.data.result.debugCode,
+        }
+      } else {
+        throw new Error(response.data.errorMessages?.join(', ') || 'خطا در ارسال کد')
+      }
+    } catch (err) {
+      console.error('Error sending email code:', err)
+      throw new Error(err.response?.data?.errorMessages?.join(', ') || 'خطا در ارسال کد ایمیل')
+    }
+  }
+
+  async function signInWithEmailCode(email, code) {
+    try {
+      const response = await api.post('/SmsAuth/verify-email', {
+        email: email,
+        code: code,
+      })
+
+      if (response.data.inSuccess) {
+        const result = response.data.result
+        Cookies.set('token_cloudLand', result.token, { expires: 1 })
+        const userData = decodeToken(result.token)
+        Object.assign(user, userData)
+        isAuthenticated.value = true
+        router.push('/')
+        return { success: true }
+      } else {
+        throw new Error(response.data.errorMessages?.join(', ') || 'خطا در ورود با ایمیل')
+      }
+    } catch (err) {
+      console.error('Error verifying email code:', err)
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join(', ') || 'خطا در ورود با ایمیل',
+      }
+    }
+  }
+
+  async function signUpWithEmailTwoStep(userData) {
+    try {
+      const response = await api.post('/SmsAuth/send-email-register-code', {
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+      })
+
+      if (response.data.inSuccess) {
+        return {
+          success: true,
+          message: 'کد تأیید ارسال شد',
+          debugCode: response.data.result.debugCode,
+        }
+      } else {
+        return {
+          success: false,
+          message: response.data.errorMessages?.join(', ') || 'خطا در ارسال کد ثبت‌نام',
+        }
+      }
+    } catch (err) {
+      console.error('Error sending email register code:', err)
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join(', ') || 'خطا در ارسال کد ثبت‌نام',
+      }
+    }
+  }
+
+  async function verifyEmailRegister(email, code) {
+    try {
+      const response = await api.post('/SmsAuth/verify-email-register', {
+        email: email,
+        code: code,
+      })
+
+      if (response.data.inSuccess) {
+        const result = response.data.result
+        Cookies.set('token_cloudLand', result.token, { expires: 1 })
+        const userData = decodeToken(result.token)
+        Object.assign(user, userData)
+        isAuthenticated.value = true
+        router.push('/')
+        return { success: true }
+      } else {
+        return {
+          success: false,
+          message: response.data.errorMessages?.join(', ') || 'خطا در تأیید کد ثبت‌نام',
+        }
+      }
+    } catch (err) {
+      console.error('Error verifying email register:', err)
+      return {
+        success: false,
+        message: err.response?.data?.errorMessages?.join(', ') || 'خطا در تأیید کد ثبت‌نام',
+      }
+    }
+  }
+
   async function getUserByPhone(phoneNumber) {
     try {
       const response = await api.get(
         `/SmsAuth/user-by-phone?phoneNumber=${encodeURIComponent(phoneNumber)}`,
       )
-
       if (response.data.inSuccess) {
         return response.data.result
       } else {
@@ -108,15 +210,12 @@ export const useAuthStore = defineStore('authStore', () => {
   async function signUpWithPhone(userData) {
     try {
       const result = await authService.signUp(userData)
-
       if (result && !result.success) {
         return result
       }
-
       const { showSuccess } = useSwal()
       showSuccess('ثبت نام با موفقیت انجام شد')
       router.push({ name: APP_ROUTE_NAMES.SIGN_IN })
-
       return { success: true }
     } catch (err) {
       return {
@@ -131,9 +230,7 @@ export const useAuthStore = defineStore('authStore', () => {
       const { token, user: userData } = await authService.signIn(formObj)
       Object.assign(user, userData)
       isAuthenticated.value = true
-
       Cookies.set('token_cloudLand', token, { expires: 1 })
-
       router.push('/')
     } catch (err) {
       return {
@@ -146,24 +243,11 @@ export const useAuthStore = defineStore('authStore', () => {
   async function signInWithSms(phoneNumber, code) {
     try {
       const result = await smsService.verifyLoginCode(phoneNumber, code)
-
-      console.log('📱 SMS login result:', result)
-
-      // ذخیره توکن
       Cookies.set('token_cloudLand', result.token, { expires: 1 })
-
-      // دیکد کردن توکن
       const userData = decodeToken(result.token)
-      console.log('🔐 Decoded user data:', userData)
-
-      // پر کردن اطلاعات کاربر
       Object.assign(user, userData)
-
-      // 🔥 مهم: شماره تلفن رو حتماً ست کن
       user.phoneNumber = phoneNumber
       isAuthenticated.value = true
-
-      // 🔥 در localStorage هم ذخیره کن
       localStorage.setItem('userPhone', phoneNumber)
       localStorage.setItem(
         'userData',
@@ -173,15 +257,9 @@ export const useAuthStore = defineStore('authStore', () => {
           phoneNumber: phoneNumber,
         }),
       )
-
-      console.log('✅ User after SMS login:', user)
-      console.log('✅ Phone number saved to localStorage:', phoneNumber)
-
       router.push('/')
-
       return { success: true }
     } catch (err) {
-      console.error('❌ SMS login error:', err)
       return {
         success: false,
         message: err.response?.data?.errorMessages?.join('--') || 'خطا در ورود با SMS',
@@ -213,17 +291,11 @@ export const useAuthStore = defineStore('authStore', () => {
   async function verifyPhoneRegister(phoneNumber, code) {
     try {
       const result = await smsService.verifyRegisterCode(phoneNumber, code)
-
       Cookies.set('token_cloudLand', result.token, { expires: 1 })
       const userData = decodeToken(result.token)
-
       Object.assign(user, userData)
-
-      // 🔥 شماره تلفن رو ذخیره کن
       user.phoneNumber = phoneNumber
       isAuthenticated.value = true
-
-      // 🔥 در localStorage ذخیره کن
       localStorage.setItem('userPhone', phoneNumber)
       localStorage.setItem(
         'userData',
@@ -233,7 +305,6 @@ export const useAuthStore = defineStore('authStore', () => {
           phoneNumber: phoneNumber,
         }),
       )
-
       return { success: true }
     } catch (err) {
       return {
@@ -250,7 +321,7 @@ export const useAuthStore = defineStore('authStore', () => {
       name: '',
       id: '',
       role: '',
-      phoneNumber: '', // ✅ اضافه شد
+      phoneNumber: '',
     })
     isAuthenticated.value = false
     Cookies.remove('token_cloudLand')
@@ -273,8 +344,12 @@ export const useAuthStore = defineStore('authStore', () => {
     signUpWithPhoneTwoStep,
     verifyPhoneRegister,
     sendSmsCode,
-    getUserByPhone, // ✅ اضافه شد
+    getUserByPhone,
     initialize,
     signOut,
+    sendEmailCode,
+    signInWithEmailCode,
+    signUpWithEmailTwoStep,
+    verifyEmailRegister,
   }
 })

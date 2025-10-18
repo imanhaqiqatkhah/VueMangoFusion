@@ -148,21 +148,30 @@ const fillUserData = async () => {
   console.log('🔄 fillUserData called')
 
   if (authStore.isAuthenticated) {
-    // اول از localStorage چک کن (مطمئن‌ترین راه)
     const savedUserData = localStorage.getItem('userData')
+
+    console.log('🔍 AuthStore user:', authStore.user)
+    console.log('🔍 AuthStore phoneNumber:', authStore.user.phoneNumber)
+
     if (savedUserData) {
       const userData = JSON.parse(savedUserData)
+      console.log('✅ Data from localStorage:', userData)
+
       orderData.pickUpName = userData.name || ''
       orderData.pickUpEmail = userData.email || ''
-      orderData.pickUpPhoneNumber = userData.phoneNumber || ''
-      console.log('✅ Data from localStorage:', userData)
-    }
-    // اگر localStorage خالی بود، از authStore استفاده کن
-    else {
-      orderData.pickUpName = authStore.user.name || ''
-      orderData.pickUpEmail = authStore.user.email || ''
-      orderData.pickUpPhoneNumber = authStore.user.phoneNumber || ''
-      console.log('📊 Data from authStore:', authStore.user)
+
+      // 🔴 اول از authStore بگیر، اگر نبود از localStorage
+      orderData.pickUpPhoneNumber = authStore.user.phoneNumber || userData.phoneNumber || ''
+
+      orderData.deliveryAddress = userData.address || ''
+      orderData.applicationUserId = userData.id || authStore.user.id || ''
+
+      console.log('📝 Final filled data:')
+      console.log('- Name:', orderData.pickUpName)
+      console.log('- Email:', orderData.pickUpEmail)
+      console.log('- Phone (from authStore):', authStore.user.phoneNumber)
+      console.log('- Phone (from localStorage):', userData.phoneNumber)
+      console.log('- Phone (final):', orderData.pickUpPhoneNumber)
     }
   }
 }

@@ -163,6 +163,18 @@ export const useAuthStore = defineStore('authStore', () => {
         const userData = decodeToken(result.token)
         Object.assign(user, userData)
         isAuthenticated.value = true
+
+        // 🔴 اضافه کردن: ذخیره شماره تلفن در localStorage
+        localStorage.setItem(
+          'userData',
+          JSON.stringify({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phoneNumber: user.phoneNumber || '', // این خط اضافه شد
+          }),
+        )
+
         router.push('/')
         return { success: true }
       } else {
@@ -324,13 +336,16 @@ export const useAuthStore = defineStore('authStore', () => {
       Object.assign(user, userData)
       user.phoneNumber = phoneNumber
       isAuthenticated.value = true
+
+      // 🔴 اضافه کردن: ذخیره شماره تلفن در localStorage
       localStorage.setItem('userPhone', phoneNumber)
       localStorage.setItem(
         'userData',
         JSON.stringify({
+          id: user.id,
           name: user.name,
           email: user.email,
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber, // این خط اضافه شد
         }),
       )
       return { success: true }

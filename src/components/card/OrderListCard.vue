@@ -31,7 +31,16 @@
           <span class="fw-bold">{{ (order.orderTotal / 10).toFixed(3) }} تومان</span>
         </div>
       </div>
-
+      <!-- 🔥 بخش آدرس -->
+      <div class="mb-4" v-if="order.deliveryAddress">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi bi-geo-alt text-dark ps-2"></i>
+          <div>
+            <h6 class="mb-1">آدرس تحویل</h6>
+            <p class="text-body-secondary mb-0 small">{{ order.deliveryAddress }}</p>
+          </div>
+        </div>
+      </div>
       <div class="bg-body-tertiary rounded-3 p-3">
         <div class="d-flex align-items-center mb-3 border-bottom pb-2">
           <i class="bi bi-card-list text-dark ps-2"></i>

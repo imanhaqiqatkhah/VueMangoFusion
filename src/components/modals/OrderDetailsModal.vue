@@ -37,6 +37,22 @@
           </div>
         </div>
         <div class="modal-body-scrollable p-3 p-sm-4" style="max-height: 70vh; overflow-y: auto">
+          <!-- 🔥 بخش آدرس تحویل - فقط برای ادمین -->
+          <div v-if="authStore.isAdmin" class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-geo-alt text-dark ms-2"></i>
+                <h6 class="card-title mb-0">آدرس تحویل</h6>
+              </div>
+              <div v-if="order.deliveryAddress" class="bg-light rounded-2 p-3">
+                <p class="mb-0 text-dark">{{ order.deliveryAddress }}</p>
+              </div>
+              <div v-else class="text-center text-body-secondary py-2">
+                <i class="bi bi-info-circle me-1"></i>
+                آدرس تحویل ثبت نشده است
+              </div>
+            </div>
+          </div>
           <div class="row g-3 g-md-4 mb-4">
             <div class="col-12 col-md-6">
               <div class="card border-0 shadow-sm h-100">
@@ -200,6 +216,7 @@ import { ref } from 'vue'
 import { useSwal } from '@/composables/swal'
 import { usePersianDate } from '@/composables/persianDate'
 import orderService from '@/services/orderService'
+import { useAuthStore } from '@/stores/authStore' // 🔥 اضافه شد
 import {
   ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETED,
@@ -210,6 +227,7 @@ import {
 
 const { showSuccess, showError, showConfirm } = useSwal()
 const { toPersianDate } = usePersianDate()
+const authStore = useAuthStore() // 🔥 اضافه شد
 
 // Props
 const props = defineProps({

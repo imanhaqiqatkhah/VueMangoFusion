@@ -41,7 +41,7 @@
             </div>
 
             <!-- ایمیل -->
-            <div class="mb-4">
+            <div class="mb-3">
               <label class="form-label">ایمیل</label>
               <input
                 v-model="orderData.pickUpEmail"
@@ -49,6 +49,21 @@
                 class="form-control"
                 placeholder="ایمیل شما"
               />
+            </div>
+
+            <!-- 🔥 آدرس تحویل -->
+            <div class="mb-4">
+              <label class="form-label">آدرس تحویل</label>
+              <textarea
+                v-model="orderData.deliveryAddress"
+                class="form-control"
+                rows="3"
+                placeholder="آدرس کامل تحویل سفارش را وارد کنید..."
+              ></textarea>
+              <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                آدرس دقیق برای تحویل سفارش ضروری است
+              </small>
             </div>
 
             <!-- سبد خرید -->
@@ -134,6 +149,8 @@ const orderData = reactive({
   pickUpName: '',
   pickUpPhoneNumber: '',
   pickUpEmail: '',
+  // 🔥 فیلد جدید: آدرس تحویل
+  deliveryAddress: '',
   orderTotal: 0,
   totalItem: 0,
   orderDetailsDTO: [],
@@ -143,7 +160,6 @@ const isSubmitting = ref(false)
 const errorList = reactive([])
 
 // پر کردن خودکار اطلاعات کاربر
-// پر کردن خودکار اطلاعات کاربر
 const fillUserData = async () => {
   console.log('🔄 fillUserData called')
 
@@ -151,7 +167,7 @@ const fillUserData = async () => {
     const savedUserData = localStorage.getItem('userData')
 
     console.log('🔍 AuthStore user:', authStore.user)
-    console.log('🔍 AuthStore phoneNumber:', authStore.user.phoneNumber)
+    console.log('🔍 AuthStore user.id:', authStore.user.id) // 🔥 این خط رو اضافه کن
 
     if (savedUserData) {
       const userData = JSON.parse(savedUserData)
@@ -159,19 +175,15 @@ const fillUserData = async () => {
 
       orderData.pickUpName = userData.name || ''
       orderData.pickUpEmail = userData.email || ''
-
-      // 🔴 اول از authStore بگیر، اگر نبود از localStorage
       orderData.pickUpPhoneNumber = authStore.user.phoneNumber || userData.phoneNumber || ''
-
-      orderData.deliveryAddress = userData.address || ''
-      orderData.applicationUserId = userData.id || authStore.user.id || ''
+      orderData.applicationUserId = authStore.user.id || userData.id || '' // 🔥 این خط رو چک کن
 
       console.log('📝 Final filled data:')
       console.log('- Name:', orderData.pickUpName)
       console.log('- Email:', orderData.pickUpEmail)
-      console.log('- Phone (from authStore):', authStore.user.phoneNumber)
-      console.log('- Phone (from localStorage):', userData.phoneNumber)
-      console.log('- Phone (final):', orderData.pickUpPhoneNumber)
+      console.log('- Phone:', orderData.pickUpPhoneNumber)
+      console.log('- UserId:', orderData.applicationUserId) // 🔥 این خط رو اضافه کن
+      console.log('- Address:', orderData.deliveryAddress)
     }
   }
 }
@@ -189,6 +201,10 @@ watch(
 
 const submitOrder = async () => {
   try {
+    console.log('🔍 User ID being sent:', authStore.user.id)
+    console.log('🔍 Order Data applicationUserId:', orderData.applicationUserId)
+    console.log('🔍 User ID being sent:', authStore.user.id) // 🔥 این خط رو اضافه کن
+    console.log('🔍 Order Data:', orderData) // 🔥 این خط رو اضافه کن
     isSubmitting.value = true
     errorList.length = 0
 
@@ -196,6 +212,7 @@ const submitOrder = async () => {
     if (!orderData.pickUpName) errorList.push('نام را وارد کنید')
     if (!orderData.pickUpPhoneNumber) errorList.push('شماره تلفن را وارد کنید')
     if (!orderData.pickUpEmail) errorList.push('ایمیل را وارد کنید')
+    // 🔥 اعتبارسنجی آدرس اختیاری است
 
     if (errorList.length > 0) {
       isSubmitting.value = false

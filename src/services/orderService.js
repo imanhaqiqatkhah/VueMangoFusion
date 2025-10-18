@@ -39,6 +39,8 @@ export default {
         pickUpName: OrderData.pickUpName,
         pickUpPhoneNumber: OrderData.pickUpPhoneNumber,
         pickUpEmail: OrderData.pickUpEmail,
+        // 🔥 این خط رو اضافه کن
+        deliveryAddress: OrderData.deliveryAddress,
         applicationUserId: OrderData.applicationUserId,
         orderTotal: OrderData.orderTotal,
         totalItem: OrderData.totalItem,

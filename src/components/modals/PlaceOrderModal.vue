@@ -53,8 +53,9 @@
 
             <!-- 🔥 آدرس تحویل -->
             <div class="mb-4">
-              <label class="form-label">آدرس تحویل</label>
+              <label class="form-label">آدرس تحویل <span class="text-danger">*</span></label>
               <textarea
+                required
                 v-model="orderData.deliveryAddress"
                 class="form-control"
                 rows="3"
